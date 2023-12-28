@@ -28,12 +28,12 @@ class CustomTextStyles {
       ).poppins;
 
   static get poppinsOnPrimaryContainerBlack => TextStyle(
-          color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
-          fontSize: 66,
-          fontWeight: FontWeight.w900,
-          height: 1,
-          letterSpacing: 1.0)
-      .poppins;
+        color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
+        fontSize: 66,
+        fontWeight: FontWeight.w900,
+        height: 1,
+        letterSpacing: 1.0,
+      ).poppins;
 
   static get poppinsPrimaryContainer => TextStyle(
           color: theme.colorScheme.primaryContainer,
