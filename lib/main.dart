@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:online_course_app/feature/auth/presentation/welcome_page.dart';
-
+import 'package:flutter/services.dart';
+import 'config/routes/route.dart';
 import 'config/theme/app_theme.dart';
 
 void main() {
@@ -10,14 +10,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark,
+    ));
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: theme,
       debugShowCheckedModeBanner: false,
-      home: const WelcomePage(),
+      routeInformationParser: AppRoutes.router.routeInformationParser,
+      routerDelegate: AppRoutes.router.routerDelegate,
+      routeInformationProvider: AppRoutes.router.routeInformationProvider,
     );
   }
 }
