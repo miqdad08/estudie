@@ -4,11 +4,11 @@ import 'package:online_course_app/common_widget/image/custom_image.dart';
 import '../../config/theme/app_decoration.dart';
 import '../../config/theme/app_theme.dart';
 
-class CourseCategoryItem extends StatelessWidget {
+class CategoryItem extends StatelessWidget {
   final CategoryModel data;
   final bool isSelected;
 
-  const CourseCategoryItem({
+  const CategoryItem({
     super.key,
     required this.data,
     required this.isSelected,
