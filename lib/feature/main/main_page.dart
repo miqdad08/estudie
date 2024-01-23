@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:online_course_app/common_widget/bottom_navigation/bottom_nav_bar.dart';
 import 'package:online_course_app/config/constant/image_constant.dart';
 import 'package:online_course_app/config/theme/app_theme.dart';
-import 'package:online_course_app/feature/home/presentation/home_page.dart';
 
 import '../../common_widget/bottom_navigation/bottom_nav_bar_item.dart';
+import '../auth/presentation/settings_page.dart';
+import '../course/presentation/home_page.dart';
 
 class MainPage extends StatefulWidget {
   static String routeName = "main_page";
@@ -17,13 +18,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int selectedPage = 0;
-  PageController pageController = PageController();
 
   final routes= [
     const Center(child: HomePage(),),
     Center(child: Text('Library', style: theme.textTheme.titleMedium,),),
     Center(child: Text('Groups', style: theme.textTheme.titleMedium,),),
-    Center(child: Text('Settings', style: theme.textTheme.titleMedium,),),
+    const Center(child: SettingsPage(),),
   ];
 
   @override
@@ -32,17 +32,6 @@ class _MainPageState extends State<MainPage> {
       body: Stack(
         children: [
           routes[selectedPage],
-          // PageView(
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   controller: pageController,
-          //   onPageChanged: (index) {},
-          //   children: [
-          //     const Center(child: HomePage(),),
-          //     Center(child: Text('Library', style: theme.textTheme.titleMedium,),),
-          //     Center(child: Text('Groups', style: theme.textTheme.titleMedium,),),
-          //     Center(child: Text('Settings', style: theme.textTheme.titleMedium,),),
-          //   ],
-          // ),
           BottomNavBar(
             items: [
               BottomNavBarItem(
@@ -72,11 +61,6 @@ class _MainPageState extends State<MainPage> {
             ],
             onTap: (int index) {
               selectedPage = index;
-              // pageController.animateToPage(
-              //   selectedPage,
-              //   duration: const Duration(milliseconds: 200),
-              //   curve: Curves.easeInOut,
-              // );
               setState(() {});
             },
             selectedIndex: selectedPage,
