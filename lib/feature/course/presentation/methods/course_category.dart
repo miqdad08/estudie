@@ -31,7 +31,7 @@ Widget courseCategory({
                       left: data == categories.first ? 24 : 10,
                       right: data == categories.last ? 24 : 0,
                     ),
-                    child: CourseCategoryItem(
+                    child: CategoryItem(
                       data: data,
                       isSelected: isSelected == data.title,
                     ),
