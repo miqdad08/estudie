@@ -2,8 +2,10 @@
 
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:online_course_app/config/constant/image_constant.dart';
 
 class CustomImageWidget extends StatelessWidget {
   String? imagePath;
@@ -118,7 +120,7 @@ class CustomImageWidget extends StatelessWidget {
               ),
             ),
             errorWidget: (context, url, error) => Image.asset(
-              placeHolder,
+              ImageConstant.imgPlaceholder,
               height: height,
               width: width,
               fit: fit ?? BoxFit.cover,
