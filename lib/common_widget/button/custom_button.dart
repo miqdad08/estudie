@@ -9,20 +9,21 @@ class CustomButtonWidget extends BaseButton {
     this.decoration,
     this.leftIcon,
     this.rightIcon,
+    this.isLoading = false,
     EdgeInsets? margin,
     VoidCallback? onPressed,
     ButtonStyle? buttonStyle,
     Alignment? alignment,
     TextStyle? buttonTextStyle,
-    bool? isDisabled,
+    bool? isEnable,
     double? height,
     double? width,
-    required String text,
+    required String title,
   }) : super(
-          text: text,
+          text: title,
           onPressed: onPressed,
           buttonStyle: buttonStyle,
-          isDisabled: isDisabled,
+          isEnable: isEnable ?? true,
           buttonTextStyle: buttonTextStyle,
           height: height,
           width: width,
@@ -35,6 +36,7 @@ class CustomButtonWidget extends BaseButton {
   final Widget? leftIcon;
 
   final Widget? rightIcon;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +55,23 @@ class CustomButtonWidget extends BaseButton {
         decoration: decoration,
         child: ElevatedButton(
           style: buttonStyle,
-          onPressed: isDisabled ?? false ? null : onPressed ?? () {},
+          onPressed: isEnable && !isLoading ? onPressed : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               leftIcon ?? const SizedBox.shrink(),
+              if (isLoading) ...[
+                const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
+                const SizedBox(width: 20),
+              ],
               Text(
                 text,
                 style: buttonTextStyle ??
