@@ -3,7 +3,7 @@ import 'package:online_course_app/common_util/size/methods.dart';
 import 'package:online_course_app/common_widget/image/custom_image.dart';
 
 import '../../config/theme/app_theme.dart';
-import '../../feature/home/domain/entities/teacher.dart';
+import '../../feature/course/domain/entities/teacher.dart';
 
 class TeacherItem extends StatelessWidget {
   final Teacher teacher;
@@ -17,7 +17,7 @@ class TeacherItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 155,
-      height: 174,
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: theme.colorScheme.errorContainer,
