@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672778535896",
+    "project_id": "estudie-ceb95",
+    "storage_bucket": "estudie-ceb95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672778535896:android:62d8f707f42143e71ce8ad",
+        "android_client_info": {
+          "package_name": "com.miqdad.estudie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzi-eGxhIsLciLORUL2VDAPBjoUYvD16k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
