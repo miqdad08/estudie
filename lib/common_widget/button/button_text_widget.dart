@@ -18,16 +18,18 @@ class ButtonTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: isEnable ? onTap : null,
       child: Text(
         title,
         style: isEnable
             ? theme.textTheme.bodyMedium?.copyWith(
-                fontSize: fontSize ?? 14,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
+                fontSize: fontSize ?? 16,
               )
             : theme.textTheme.bodyMedium?.copyWith(
-                fontSize: fontSize ?? 14,
+                fontSize: fontSize ?? 16,
               ),
       ),
     );
