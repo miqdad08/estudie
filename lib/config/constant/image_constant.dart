@@ -20,4 +20,9 @@ class IconsConstants {
   static String icStationery = '$iconPath/ic_stationery.svg';
   static String icCode = '$iconPath/ic_code.svg';
   static String icRating = '$iconPath/ic_rating.svg';
+  static String icBack = '$iconPath/ic_back.svg';
+  static String icMenu = '$iconPath/ic_menu.svg';
+  static String icPlay = '$iconPath/ic_play.svg';
+  static String icLock = '$iconPath/ic_lock.svg';
+  static String icCheckMark = '$iconPath/ic_checkmark.svg';
 }
