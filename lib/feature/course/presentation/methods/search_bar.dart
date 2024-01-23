@@ -22,7 +22,7 @@ Widget searchBar(BuildContext context) => Row(
                 maxHeight: 52,
               ),
               prefixIcon:  Container(
-                margin: EdgeInsets.only(right: 16),
+                margin: const EdgeInsets.only(right: 16),
                 child: CustomImageWidget(
                   imagePath: IconsConstants.icSearch,
                   height: 24,
