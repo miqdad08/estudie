@@ -22,7 +22,21 @@ class CustomTextStyles {
   // Poppins text style
   static get poppinsOnPrimaryContainer => TextStyle(
         color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
-        fontSize: 66,
+        fontSize: 60,
+        fontWeight: FontWeight.w900,
+        height: 1,
+      ).poppins;
+
+  static get poppinsOnPrimaryContainer50 => TextStyle(
+        color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
+        fontSize: 50,
+        fontWeight: FontWeight.w900,
+        height: 1,
+      ).poppins;
+
+  static get poppinsOnPrimaryContainer30 => TextStyle(
+        color: theme.colorScheme.onPrimaryContainer.withOpacity(1),
+        fontSize: 40,
         fontWeight: FontWeight.w900,
         height: 1,
       ).poppins;
@@ -38,6 +52,22 @@ class CustomTextStyles {
   static get poppinsPrimaryContainer => TextStyle(
           color: theme.colorScheme.primaryContainer,
           fontSize: 60,
+          fontWeight: FontWeight.w900,
+          height: 1,
+          letterSpacing: 1.0)
+      .poppins;
+
+  static get poppinsPrimaryContainer50 => TextStyle(
+          color: theme.colorScheme.primaryContainer,
+          fontSize: 50,
+          fontWeight: FontWeight.w900,
+          height: 1,
+          letterSpacing: 1.0)
+      .poppins;
+
+  static get poppinsPrimaryContainer30 => TextStyle(
+          color: theme.colorScheme.primaryContainer,
+          fontSize: 40,
           fontWeight: FontWeight.w900,
           height: 1,
           letterSpacing: 1.0)
