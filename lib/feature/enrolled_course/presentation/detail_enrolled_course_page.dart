@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:online_course_app/common_util/size/methods.dart';
+import 'package:online_course_app/feature/course/domain/entities/course.dart';
+import 'package:online_course_app/feature/detail_course/presentation/bloc/detail_course_bloc.dart';
+import 'package:online_course_app/feature/enrolled_course/data/model/enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../common_util/youtube_link_format.dart';
@@ -8,21 +15,24 @@ import '../../../common_widget/icon/custom_icon_button.dart';
 import '../../../common_widget/image/custom_image.dart';
 import '../../../config/constant/image_constant.dart';
 import '../../../config/theme/app_theme.dart';
+import '../../detail_course/domain/entities/discussion.dart';
 import '../../detail_course/domain/entities/section.dart';
 import '../../detail_course/domain/entities/video.dart';
+import '../../detail_course/domain/usecases/create_discussion/create_discussion_param.dart';
+import '../../detail_course/presentation/methods/discussions.dart';
 import '../../detail_course/presentation/methods/lessons.dart';
 
 class DetailEnrolledCourseArguments {
-  final Video video;
-  final Section? section;
-  final String title;
-  final List<Section> lessons;
+  final Video? video;
+  // final Section? section;
+  final EnrolledCourseEntity data;
+  final List<Discussion>? discussions;
 
   DetailEnrolledCourseArguments({
-    required this.video,
-    this.section,
-    required this.title,
-    required this.lessons,
+    this.video,
+    // this.section,
+    required this.data,
+    this.discussions,
   });
 }
 
@@ -44,17 +54,20 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   late YoutubePlayerController _controller;
 
   Video? data;
-  int index = 0;
+  // int index = 0;
   int currentDuration = 0;
   int? endDuration;
   bool _isPlayerReady = false;
   bool fullScreen = false;
   String selectedCategory = "About";
+  List<File> photoAttachments = [];
+  TextEditingController titleCont = TextEditingController();
+  TextEditingController detailsCont = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    data = widget.arguments.video;
+    data = widget.arguments.data.lessons[0].videos[0];
     if (data != null) {
       setYoutubePlayer();
     }
@@ -66,13 +79,19 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         data!.videoUrl,
       ),
     );
-    index = widget.arguments.section!.videos.indexOf(data!);
+    // index = widget.arguments.section!.videos.indexOf(data!);
+    // index = widget.arguments.data.lessons
+    //     .indexWhere((sublist) => sublist.videos.contains(data!));
+    print('ceki');
   }
 
   void previousVideo() {
-    if (index != -1 && _isPlayerReady) {
-      Video? previousValue =
-          index > 0 ? widget.arguments.section!.videos[index - 1] : null;
+    if (_isPlayerReady) {
+      Video? previousValue = widget.arguments.data.lessons
+          .expand((section) => section.videos.reversed)
+          .skipWhile((video) => video != data)
+          .skip(1)
+          .firstOrNull;
       if (previousValue != null) {
         setState(() {
           data = previousValue;
@@ -83,19 +102,17 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   }
 
   void nextVideo() {
-    if (data == widget.arguments.section!.videos.last) {
-      context.pop();
-    } else {
-      if (index != -1 && _isPlayerReady) {
-        Video? nextValue = index < widget.arguments.section!.videos.length - 1
-            ? widget.arguments.section!.videos[index + 1]
-            : null;
-        if (nextValue != null) {
-          setState(() {
-            data = nextValue;
-            loadVideo();
-          });
-        }
+    if ( _isPlayerReady) {
+      Video? nextValue = widget.arguments.data.lessons
+          .expand((section) => section.videos)
+          .skipWhile((video) => video != data)
+          .skip(1)
+          .firstOrNull;
+      if (nextValue != null) {
+        setState(() {
+          data = nextValue;
+          loadVideo();
+        });
       }
     }
   }
@@ -110,9 +127,13 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         loop: false,
       ),
     );
-    if (widget.arguments.section != null) {
-      index = widget.arguments.section!.videos.indexOf(data!);
-    }
+    // if (widget.arguments.section != null) {
+    //   index = widget.arguments.section!.videos.indexOf(data!);
+    // }
+
+    index = widget.arguments.data.lessons
+        .indexWhere((sublist) => sublist.videos.contains(data!));
+    print('ceki2 ${widget.arguments.data.lessons.indexWhere((sublist) => sublist.videos.contains(data!))}');
   }
 
   void checkVideo() {
@@ -178,7 +199,7 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
                     ],
                     centerTitle: false,
                     title: Text(
-                      widget.arguments.title,
+                      widget.arguments.data.title,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color:
@@ -247,16 +268,53 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
               padding: const EdgeInsets.only(top: 20.0),
               child: lessons(
                 context,
-                widget.arguments.lessons,
+                widget.arguments.data.lessons,
                 true,
                 onTapVideo: (video, section) {},
               ),
             ),
-            const Text('data'),
+            BlocBuilder<DetailCourseBloc, DetailCourseState>(
+              builder: (context, state) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: discussions(
+                    context,
+                    widget.arguments.discussions,
+                    titleCont: titleCont,
+                    detailsCont: detailsCont,
+                    photoAttacments: photoAttachments,
+                    onAddImage: (image) {
+                      photoAttachments.add(image);
+                    },
+                    onRemove: (File image) {
+                      photoAttachments.remove(image);
+                    },
+                    onSubmit: () => onSubmitDiscussions(context),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void onSubmitDiscussions(BuildContext context) {
+    context.read<DetailCourseBloc>().add(
+          CreateDiscussion(
+            discussion: CreateDiscussionParam(
+              fileAttachments: photoAttachments.map((photo) => photo).toList(),
+              id: widget.arguments.data.idCourse,
+              discussion: Discussion(
+                title: titleCont.text,
+                description: detailsCont.text,
+                time: 1,
+              ),
+            ),
+          ),
+        );
+    context.pop();
   }
 
   Widget prevNext(BuildContext context) {
@@ -266,8 +324,8 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (widget.arguments.section != null) ...[
-            if (data != widget.arguments.section?.videos.first) ...[
+          // if (widget.arguments.section != null) ...[
+          //   if (data != widget.arguments.section?.videos.first) ...[
               CustomIconButton(
                 onTap: () {
                   previousVideo();
@@ -279,12 +337,12 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
                   imagePath: IconsConstants.icBack,
                 ),
               ),
-            ] else ...[
-              const SizedBox(
-                height: 55,
-                width: 55,
-              ),
-            ],
+            // ] else ...[
+            //   const SizedBox(
+            //     height: 55,
+            //     width: 55,
+            //   ),
+            // ],
             Text(
               data?.name ?? '',
               style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
@@ -296,25 +354,20 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               height: 55,
               width: 55,
-              child: CustomImageWidget(
-                imagePath: data == widget.arguments.section?.videos.last
-                    ? IconsConstants.icCheck
-                    : IconsConstants.icNext,
-              ),
+              child: CustomImageWidget(imagePath: IconsConstants.icNext,),
+              // child: CustomImageWidget(
+              //   imagePath: data == widget.arguments.section?.videos.last &&
+              //           widget.arguments.data.lessons.last.videos.last ==
+              //               widget.arguments.section?.videos.last
+              //       ? IconsConstants.icCheck
+              //       : IconsConstants.icNext,
+              // ),
             ),
           ]
-        ],
+        // ],
       ),
     );
   }
-
-  // Widget _buildBurnerWidgetContent(Widget player) {
-  //   return Column(
-  //     children: [
-  //       player,
-  //     ],
-  //   );
-  // }
 
   Widget sliderVideo(BuildContext context) {
     return Padding(
