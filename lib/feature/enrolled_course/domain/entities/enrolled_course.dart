@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../course/domain/entities/course.dart';
+import '../../../detail_course/domain/entities/section.dart';
 
 class EnrolledCourseEntity extends Equatable {
   final String id;
@@ -13,6 +14,7 @@ class EnrolledCourseEntity extends Equatable {
   final String category;
   final double? rating;
   final int total;
+  final List<Section> lessons;
 
   const EnrolledCourseEntity({
     required this.idCourse,
@@ -25,6 +27,7 @@ class EnrolledCourseEntity extends Equatable {
     required this.category,
     required this.rating,
     required this.total,
+    required this.lessons,
   });
 
   EnrolledCourseEntity copyWith({
@@ -38,6 +41,7 @@ class EnrolledCourseEntity extends Equatable {
     String? category,
     double? rating,
     int? total,
+    List<Section>? lessons,
   }) {
     return EnrolledCourseEntity(
       id: id ?? this.id,
@@ -50,6 +54,7 @@ class EnrolledCourseEntity extends Equatable {
       category: category ?? this.category,
       rating: rating ?? this.rating,
       total: total ?? this.total,
+      lessons: lessons ?? this.lessons,
     );
   }
 
@@ -65,6 +70,7 @@ class EnrolledCourseEntity extends Equatable {
       rating: enrolledCourse.rating,
       posterPath: enrolledCourse.posterPath,
       price: enrolledCourse.price,
+      lessons: const [],
     );
   }
 
@@ -90,6 +96,7 @@ class EnrolledCourseEntity extends Equatable {
         price,
         posterPath,
         category,
-        rating
+        rating,
+        lessons
       ];
 }
