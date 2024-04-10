@@ -25,6 +25,7 @@ class DetailTeacherPage extends StatelessWidget {
         onTap: () => context.pop(),
       ),
       body: ListView(
+        padding: const EdgeInsets.all(24),
         children: [
           teacherInfo(teacher),
           verticalSpace(24),
