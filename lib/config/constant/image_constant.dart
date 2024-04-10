@@ -5,6 +5,7 @@ class ImageConstant {
   // Splash images
   static String imgWelcomePage = '$imagePath/img_welcome_page.png';
   static String imgPlaceholder = '$imagePath/img_placeholder.png';
+  static String imgUserPlaceholder = '$imagePath/img_user_placeholder.jpeg';
 }
 
 class IconsConstants {
@@ -25,4 +26,6 @@ class IconsConstants {
   static String icPlay = '$iconPath/ic_play.svg';
   static String icLock = '$iconPath/ic_lock.svg';
   static String icCheckMark = '$iconPath/ic_checkmark.svg';
+  static String icNext = '$iconPath/ic_arrow_next.svg';
+  static String icCheck = '$iconPath/ic_check.svg';
 }
