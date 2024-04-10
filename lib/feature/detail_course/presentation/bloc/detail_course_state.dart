@@ -8,6 +8,7 @@ abstract class DetailCourseState extends Equatable {
 }
 
 class DetailCourseLoading extends DetailCourseState {}
+class UnlockCourseLoading extends DetailCourseState {}
 
 class DetailCourseLoaded extends DetailCourseState {
   final DetailCourse data;
@@ -58,6 +59,24 @@ class CreateReviewSuccess extends DetailCourseState {
   final String message;
 
   const CreateReviewSuccess({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class UnlockCourseSuccess extends DetailCourseState {
+  final String message;
+
+  const UnlockCourseSuccess({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class UnlockCourseFailed extends DetailCourseState {
+  final String message;
+
+  const UnlockCourseFailed({required this.message});
 
   @override
   List<Object> get props => [message];
