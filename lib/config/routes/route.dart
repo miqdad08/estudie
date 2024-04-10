@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:online_course_app/common_widget/video_player/video_player_widget.dart';
 import 'package:online_course_app/feature/auth/presentation/sign_in_page.dart';
 import 'package:online_course_app/feature/course/domain/entities/teacher.dart';
 import 'package:online_course_app/feature/detail_course/presentation/detail_course_page.dart';
+import 'package:online_course_app/feature/enrolled_course/presentation/detail_enrolled_course_page.dart';
 import 'package:online_course_app/feature/detail_teacher/presentation/detail_teacher_page.dart';
 import '../../feature/auth/presentation/sign_up_page.dart';
 import '../../feature/auth/presentation/welcome_page.dart';
@@ -58,10 +60,25 @@ class AppRoutes {
         ],
       ),
       GoRoute(
-        path: '/${VideoPlayerView.routeName}',
-        name: VideoPlayerView.routeName,
-        builder: (context, state) {
-          return VideoPlayerView(videoUrl: state.extra as String);
+        path: '/${DetailEnrolledCoursePage.routeName}',
+        name: DetailEnrolledCoursePage.routeName,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            child: DetailEnrolledCoursePage(
+              arguments: state.extra as DetailEnrolledCourseArguments,
+            ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = Offset(0.0, 1.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+          );
         },
       ),
     ],
