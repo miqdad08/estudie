@@ -43,20 +43,23 @@ class CustomIconButton extends StatelessWidget {
   Widget get iconButtonWidget => SizedBox(
         height: height ?? 0,
         width: width ?? 0,
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          icon: Container(
-            height: height ?? 0,
-            width: width ?? 0,
-            padding: padding ?? EdgeInsets.zero,
-            decoration: decoration ??
-                BoxDecoration(
-                  color: theme.colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(27),
-                ),
-            child: child,
+        child: InkWell(
+          onTap: onTap,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            icon: Container(
+              height: height ?? 0,
+              width: width ?? 0,
+              padding: padding ?? EdgeInsets.zero,
+              decoration: decoration ??
+                  BoxDecoration(
+                    color: theme.colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(27),
+                  ),
+              child: child,
+            ),
+            onPressed: onTap,
           ),
-          onPressed: onTap,
         ),
       );
 }
