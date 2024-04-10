@@ -8,31 +8,35 @@ import '../../feature/course/domain/entities/course.dart';
 
 class CourseItem extends StatelessWidget {
   final Course course;
+  final VoidCallback? onTap;
 
-  const CourseItem({super.key, required this.course});
+  const CourseItem({super.key, required this.course, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.width / 2.5,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomImageWidget(
-            width: 100,
-            height: 150,
-            radius: BorderRadius.circular(12),
-            imagePath: course.posterPath,
-            fit: BoxFit.cover,
-          ),
-          horizontalSpace(10),
-          _buildTitleAndDescription(),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: MediaQuery.of(context).size.width / 2.5,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.errorContainer,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomImageWidget(
+              width: 100,
+              height: 150,
+              radius: BorderRadius.circular(12),
+              imagePath: course.posterPath,
+              fit: BoxFit.cover,
+            ),
+            horizontalSpace(10),
+            _buildTitleAndDescription(),
+          ],
+        ),
       ),
     );
   }
