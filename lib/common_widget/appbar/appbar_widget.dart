@@ -8,10 +8,13 @@ import '../image/custom_image.dart';
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onTap;
+  final VoidCallback? onSuffixTap;
 
   const AppBarWidget({
     Key? key,
-    required this.title, this.onTap,
+    required this.title,
+    this.onTap,
+    this.onSuffixTap,
   }) : super(key: key);
 
   @override
@@ -43,6 +46,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
           ),
           CustomIconButton(
+            onTap: onSuffixTap,
             padding: const EdgeInsets.symmetric(horizontal: 15),
             height: 55,
             width: 55,
