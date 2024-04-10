@@ -19,6 +19,26 @@ class Course extends Equatable {
     required this.rating,
   });
 
+  Course copyWith({
+    String? id,
+    String? idTeacher,
+    String? title,
+    int? price,
+    String? category,
+    double? rating,
+    String? posterPath,
+  }) {
+    return Course(
+      id: id ?? this.id,
+      idTeacher: idTeacher ?? this.idTeacher,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      posterPath: posterPath ?? this.posterPath,
+      category: category ?? this.category,
+      rating: rating ?? this.rating,
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,
