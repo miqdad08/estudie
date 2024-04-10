@@ -13,19 +13,17 @@ Widget listCourse({
   required final Function(Course data) onTap,
 }) {
   return BlocProvider<DetailTeacherBloc>(
-    create: (context) => DetailTeacherBloc(sl())..add(GetCoursesByTeacher(idTeacher: teacher.id)),
+    create: (context) => DetailTeacherBloc(sl())
+      ..add(GetCoursesByTeacher(idTeacher: teacher.id)),
     child: BlocBuilder<DetailTeacherBloc, DetailTeacherState>(
       builder: (context, state) {
         if (state is CoursesSuccess) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  "Courses",
-                  style: theme.textTheme.titleMedium,
-                ),
+              Text(
+                "Courses",
+                style: theme.textTheme.titleMedium,
               ),
               verticalSpace(8),
               Column(
@@ -34,7 +32,7 @@ Widget listCourse({
                       (data) => GestureDetector(
                         onTap: () => onTap(data),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 0, 24, 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: CourseItem(
                             course: data,
                           ),
