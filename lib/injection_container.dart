@@ -30,9 +30,17 @@ import 'package:online_course_app/feature/detail_teacher/data/repository/detail_
 import 'package:online_course_app/feature/detail_teacher/domain/repository/detail_teacher_repository.dart';
 import 'package:online_course_app/feature/detail_teacher/domain/usecases/get_courses.dart';
 import 'package:online_course_app/feature/detail_teacher/presentation/detail_teacher_bloc/detail_teacher_bloc.dart';
+import 'package:online_course_app/feature/enrolled_course/data/data_source/firebase_enrolled_course_service.dart';
+import 'package:online_course_app/feature/enrolled_course/data/repository/enrolled_course_repository_impl.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/repository/enrolled_course_repository.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/usecases/create_enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/usecases/get_enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/presentation/bloc/enrolled_course/enrolled_course_bloc.dart';
 
 import 'feature/auth/domain/usecases/login/login.dart';
 import 'feature/detail_course/data/data_source/detail_course_data_source.dart';
+import 'feature/detail_course/domain/usecases/unlock_course.dart';
+import 'feature/enrolled_course/data/data_source/enrolled_course_data_source.dart';
 
 final sl = GetIt.instance;
 
@@ -45,6 +53,8 @@ Future<void> initializeDependencies() async {
       () => FirebaseCourseService());
   sl.registerLazySingleton<FirebaseDetailTeacherService>(
       () => FirebaseDetailTeacherService());
+  sl.registerLazySingleton<EnrolledCourseDataSource>(
+      () => FirebaseEnrolledCourseService());
 
   //Repository
   sl.registerSingleton<CourseRepository>(CourseRepositoryImpl(sl()));
@@ -54,6 +64,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl(sl()));
   sl.registerSingleton<DetailTeacherRepository>(
       DetailTeacherRepositoryImpl(sl()));
+  sl.registerSingleton<EnrolledCourseRepository>(
+      EnrolledCourseRepositoryImpl(sl()));
 
   //UseCase
   sl.registerSingleton<Register>(
@@ -76,12 +88,23 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<CreateReviewUseCase>(
       CreateReviewUseCase(sl(), sl(), sl()));
 
+  sl.registerSingleton<UnlockCourseUseCase>(UnlockCourseUseCase(sl(), sl(),sl()));
+
+  sl.registerSingleton<CreateEnrolledCourseUseCase>(
+      CreateEnrolledCourseUseCase(sl(), sl()));
+
+
+  sl.registerSingleton<GetEnrolledCoursesUseCase>(
+      GetEnrolledCoursesUseCase(sl(), sl()));
+
   //Bloc
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl(), sl(), sl()));
 
-  sl.registerFactory<DetailCourseBloc>(() => DetailCourseBloc(sl(), sl(), sl()));
+  sl.registerFactory<DetailCourseBloc>(
+      () => DetailCourseBloc(sl(), sl(), sl(), sl()));
 
   sl.registerFactory<CourseBloc>(() => CourseBloc(sl()));
   sl.registerFactory<TeacherBloc>(() => TeacherBloc(sl()));
   sl.registerFactory<DetailTeacherBloc>(() => DetailTeacherBloc(sl()));
+  sl.registerFactory<EnrolledCourseBloc>(() => EnrolledCourseBloc(sl()));
 }
