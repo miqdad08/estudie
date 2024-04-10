@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_course_app/feature/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:online_course_app/feature/detail_course/presentation/bloc/detail_course_bloc.dart';
 import 'config/routes/route.dart';
 import 'config/theme/app_theme.dart';
 import 'firebase_options.dart';
@@ -28,8 +29,17 @@ class MyApp extends StatelessWidget {
       statusBarIconBrightness: Brightness.dark,
     ));
 
-    return BlocProvider<AuthBloc>(
-      create: (context) => sl()..add(AuthGetCurrent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) =>
+          sl()
+            ..add(AuthGetCurrent()),
+        ),
+        BlocProvider(
+          create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl()),
+        ),
+      ],
       child: MaterialApp.router(
         title: 'Flutter Demo',
         theme: theme,
