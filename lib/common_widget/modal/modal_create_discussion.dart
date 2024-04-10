@@ -12,7 +12,7 @@ mixin ModalCreateDiscussion {
     BuildContext context, {
     required TextEditingController titleCont,
     required TextEditingController detailsCont,
-    required List<File?> photoAttacments,
+    required List<File?> photoAttachments,
     required Function(File image) onAddImage,
     required Function(File image) onRemove,
     required Function() onSubmit,
@@ -33,7 +33,7 @@ mixin ModalCreateDiscussion {
         return CreateDiscussionModalView(
           titleCont: titleCont,
           detailsCont: detailsCont,
-          photoAttacments: photoAttacments,
+          photoAttachments: photoAttachments,
           onAddImage: onAddImage,
           onRemove: onRemove,
           onSubmit: onSubmit,
@@ -46,16 +46,16 @@ mixin ModalCreateDiscussion {
 class CreateDiscussionModalView extends StatefulWidget {
   final TextEditingController titleCont;
   final TextEditingController detailsCont;
-  List<File?> photoAttacments;
-  Function(File image) onAddImage;
-  Function(File image) onRemove;
-  Function() onSubmit;
+  final List<File?> photoAttachments;
+  final Function(File image) onAddImage;
+  final Function(File image) onRemove;
+  final Function() onSubmit;
 
-  CreateDiscussionModalView({
+  const CreateDiscussionModalView({
     super.key,
     required this.titleCont,
     required this.detailsCont,
-    required this.photoAttacments,
+    required this.photoAttachments,
     required this.onAddImage,
     required this.onRemove,
     required this.onSubmit,
@@ -104,7 +104,7 @@ class _CreateDiscussionModalViewState extends State<CreateDiscussionModalView> {
                       onTap: () {
                         widget.detailsCont.clear();
                         widget.titleCont.clear();
-                        widget.photoAttacments.clear();
+                        widget.photoAttachments.clear();
                         context.pop();
                       },
                     ),
@@ -125,7 +125,7 @@ class _CreateDiscussionModalViewState extends State<CreateDiscussionModalView> {
                         widget.onSubmit();
                         widget.detailsCont.clear();
                         widget.titleCont.clear();
-                        widget.photoAttacments.clear();
+                        widget.photoAttachments.clear();
                       },
                     ),
                   ],
@@ -158,14 +158,14 @@ class _CreateDiscussionModalViewState extends State<CreateDiscussionModalView> {
               Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  if (widget.photoAttacments.isNotEmpty) ...[
+                  if (widget.photoAttachments.isNotEmpty) ...[
                     SingleChildScrollView(
                       clipBehavior: Clip.none,
                       scrollDirection: Axis.horizontal,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 70.0, top: 15),
                         child: Row(
-                          children: widget.photoAttacments
+                          children: widget.photoAttachments
                               .map(
                                 (photo) => Stack(
                                   clipBehavior: Clip.none,
