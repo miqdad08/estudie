@@ -19,6 +19,16 @@ class TeacherModel with _$TeacherModel {
   factory TeacherModel.fromJson(Map<String, dynamic> json) =>
       _$TeacherModelFromJson(json);
 
+  factory TeacherModel.fromEntity(Teacher teacher) {
+    return TeacherModel(
+      id: teacher.id,
+      name: teacher.id,
+      email: teacher.email,
+      specialist: teacher.specialist,
+      photoUrl: teacher.photoUrl,
+    );
+  }
+
   Teacher toEntity() {
     return Teacher(
       id: id,
