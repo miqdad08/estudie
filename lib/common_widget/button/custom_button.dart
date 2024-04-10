@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:online_course_app/common_util/size/methods.dart';
 import 'package:online_course_app/config/theme/app_theme.dart';
 
 import 'base_button.dart';
@@ -48,38 +49,43 @@ class CustomButtonWidget extends BaseButton {
         : buildElevatedButtonWidget;
   }
 
-  Widget get buildElevatedButtonWidget => Container(
-        height: height ?? 52,
-        width: width ?? double.maxFinite,
-        margin: margin,
-        decoration: decoration,
-        child: ElevatedButton(
-          style: buttonStyle,
-          onPressed: isEnable && !isLoading ? onPressed : null,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              leftIcon ?? const SizedBox.shrink(),
-              if (isLoading) ...[
-                const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                ),
-                const SizedBox(width: 20),
-              ],
-              Text(
-                text,
-                style: buttonTextStyle ??
-                    theme.textTheme.titleMedium,
-              ),
-              rightIcon ?? const SizedBox.shrink(),
-            ],
+  Widget get buildElevatedButtonWidget => OutlinedButton(
+        onPressed: isEnable && !isLoading ? onPressed : null,
+        style: OutlinedButton.styleFrom(
+          minimumSize: Size(width ?? double.infinity, height ?? 50),
+          padding: EdgeInsets.zero,
+          side: BorderSide.none,
+          backgroundColor: !isEnable ? theme.colorScheme.onPrimary : appTheme.deepPurpleA700,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
           ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (leftIcon != null) ...[
+              leftIcon!,
+              horizontalSpace(20),
+            ],
+            if (isLoading) ...[
+              const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              ),
+              horizontalSpace(20),
+            ],
+            Text(
+              text,
+              style: buttonTextStyle ?? theme.textTheme.titleMedium,
+            ),
+            if (rightIcon != null) ...[horizontalSpace(20), rightIcon!],
+          ],
         ),
       );
 }
