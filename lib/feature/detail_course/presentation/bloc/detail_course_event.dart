@@ -8,12 +8,12 @@ abstract class DetailCourseEvent extends Equatable {
 }
 
 class GetDetailCourse extends DetailCourseEvent {
-  final String id;
+  final Course course;
 
-  const GetDetailCourse({required this.id});
+  const GetDetailCourse({required this.course});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [course];
 }
 
 class CreateDiscussion extends DetailCourseEvent {
@@ -33,4 +33,14 @@ class CreateReview extends DetailCourseEvent {
 
   @override
   List<Object> get props => [review];
+}
+
+class UnlockCourse extends DetailCourseEvent {
+  final DetailCourse detailCourse;
+  final Course course;
+
+  const UnlockCourse({required this.detailCourse, required this.course});
+
+  @override
+  List<Object> get props => [detailCourse,course];
 }
