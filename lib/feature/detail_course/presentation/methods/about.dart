@@ -7,6 +7,7 @@ import '../../../../common_widget/icon/review_bar.dart';
 import '../../../../common_widget/text/rich_text_widget.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../course/domain/entities/course.dart';
+import '../../../detail_teacher/presentation/methods/teacher_info.dart';
 import '../../domain/entities/review.dart';
 
 Widget about({
@@ -25,6 +26,16 @@ Widget about({
               fontWeight: FontWeight.w500,
             ),
           ),
+          verticalSpace(24),
+          Text(
+            'Instructors',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 12),
+          teacherInfo(detailCourse.teacher),
           verticalSpace(24),
           Text(
             'Rating',
