@@ -20,7 +20,7 @@ _$EnrolledCourseModelImpl _$$EnrolledCourseModelImplFromJson(
       total: json['total'] as int,
       rating: (json['rating'] as num?)?.toDouble(),
       lessons: (json['lessons'] as List<dynamic>)
-          .map((e) => SectionModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => VideoModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -37,5 +37,5 @@ Map<String, dynamic> _$$EnrolledCourseModelImplToJson(
       'category': instance.category,
       'total': instance.total,
       'rating': instance.rating,
-      'lessons': instance.lessons.map((e) => e.toJson()).toList(),
+      'lessons': instance.lessons,
     };

@@ -29,8 +29,9 @@ mixin _$EnrolledCourseModel {
   String? get posterPath => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
   int get total => throw _privateConstructorUsedError;
-  double? get rating => throw _privateConstructorUsedError;
-  List<SectionModel> get lessons => throw _privateConstructorUsedError;
+  double? get rating =>
+      throw _privateConstructorUsedError; // required List<SectionModel> lessons,
+  List<VideoModel> get lessons => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -55,7 +56,7 @@ abstract class $EnrolledCourseModelCopyWith<$Res> {
       String category,
       int total,
       double? rating,
-      List<SectionModel> lessons});
+      List<VideoModel> lessons});
 }
 
 /// @nodoc
@@ -127,7 +128,7 @@ class _$EnrolledCourseModelCopyWithImpl<$Res, $Val extends EnrolledCourseModel>
       lessons: null == lessons
           ? _value.lessons
           : lessons // ignore: cast_nullable_to_non_nullable
-              as List<SectionModel>,
+              as List<VideoModel>,
     ) as $Val);
   }
 }
@@ -151,7 +152,7 @@ abstract class _$$EnrolledCourseModelImplCopyWith<$Res>
       String category,
       int total,
       double? rating,
-      List<SectionModel> lessons});
+      List<VideoModel> lessons});
 }
 
 /// @nodoc
@@ -221,7 +222,7 @@ class __$$EnrolledCourseModelImplCopyWithImpl<$Res>
       lessons: null == lessons
           ? _value._lessons
           : lessons // ignore: cast_nullable_to_non_nullable
-              as List<SectionModel>,
+              as List<VideoModel>,
     ));
   }
 }
@@ -240,7 +241,7 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
       required this.category,
       required this.total,
       this.rating,
-      required final List<SectionModel> lessons})
+      required final List<VideoModel> lessons})
       : _lessons = lessons;
 
   factory _$EnrolledCourseModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -267,9 +268,11 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
   final int total;
   @override
   final double? rating;
-  final List<SectionModel> _lessons;
+// required List<SectionModel> lessons,
+  final List<VideoModel> _lessons;
+// required List<SectionModel> lessons,
   @override
-  List<SectionModel> get lessons {
+  List<VideoModel> get lessons {
     if (_lessons is EqualUnmodifiableListView) return _lessons;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_lessons);
@@ -362,7 +365,7 @@ abstract class _EnrolledCourseModel implements EnrolledCourseModel {
       required final String category,
       required final int total,
       final double? rating,
-      required final List<SectionModel> lessons}) = _$EnrolledCourseModelImpl;
+      required final List<VideoModel> lessons}) = _$EnrolledCourseModelImpl;
 
   factory _EnrolledCourseModel.fromJson(Map<String, dynamic> json) =
       _$EnrolledCourseModelImpl.fromJson;
@@ -387,8 +390,8 @@ abstract class _EnrolledCourseModel implements EnrolledCourseModel {
   int get total;
   @override
   double? get rating;
-  @override
-  List<SectionModel> get lessons;
+  @override // required List<SectionModel> lessons,
+  List<VideoModel> get lessons;
   @override
   @JsonKey(ignore: true)
   _$$EnrolledCourseModelImplCopyWith<_$EnrolledCourseModelImpl> get copyWith =>

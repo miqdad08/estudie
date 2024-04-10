@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:online_course_app/feature/detail_course/data/model/video.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
 
-import '../../../detail_course/data/model/section.dart';
 
 part 'enrolled_course.g.dart';
 
@@ -20,7 +20,8 @@ class EnrolledCourseModel with _$EnrolledCourseModel {
     required String category,
     required int total,
     double? rating,
-    required List<SectionModel> lessons,
+    // required List<SectionModel> lessons,
+    required List<VideoModel> lessons,
   }) = _EnrolledCourseModel;
 
   factory EnrolledCourseModel.fromJson(Map<String, dynamic> json) =>
@@ -54,7 +55,7 @@ class EnrolledCourseModel with _$EnrolledCourseModel {
       rating: enrolledCourse.rating,
       posterPath: enrolledCourse.posterPath,
       price: enrolledCourse.price,
-      lessons: List<SectionModel>.from(enrolledCourse.lessons.map((lesson) => SectionModel.fromEntity(lesson))),
+      lessons: List<VideoModel>.from(enrolledCourse.lessons.map((lesson) => VideoModel.fromEntity(lesson))),
     );
   }
 }

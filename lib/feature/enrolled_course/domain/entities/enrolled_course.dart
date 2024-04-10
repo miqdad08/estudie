@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:online_course_app/feature/detail_course/domain/entities/video.dart';
 
 import '../../../course/domain/entities/course.dart';
-import '../../../detail_course/domain/entities/section.dart';
 
 class EnrolledCourseEntity extends Equatable {
   final String id;
@@ -14,7 +14,8 @@ class EnrolledCourseEntity extends Equatable {
   final String category;
   final double? rating;
   final int total;
-  final List<Section> lessons;
+  // final List<Section> lessons;
+  final List<Video> lessons;
 
   const EnrolledCourseEntity({
     required this.idCourse,
@@ -41,7 +42,7 @@ class EnrolledCourseEntity extends Equatable {
     String? category,
     double? rating,
     int? total,
-    List<Section>? lessons,
+    List<Video>? lessons,
   }) {
     return EnrolledCourseEntity(
       id: id ?? this.id,
