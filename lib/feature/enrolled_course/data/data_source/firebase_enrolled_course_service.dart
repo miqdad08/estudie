@@ -13,15 +13,17 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
-  Future<Result<List<EnrolledCourseModel>>> getUserEnrolledCourse({required String uid}) async {
+  Future<Result<List<EnrolledCourseModel>>> getUserEnrolledCourse(
+      {required String uid}) async {
     firestore.CollectionReference<Map<String, dynamic>> enrolledCourses =
-    _firebaseFirestore.collection('enrolledCourses');
+        _firebaseFirestore.collection('enrolledCourses');
 
     try {
       var result = await enrolledCourses.where('uid', isEqualTo: uid).get();
       if (result.docs.isNotEmpty) {
-        return Result.success(
-            result.docs.map((e) => EnrolledCourseModel.fromJson(e.data())).toList());
+        return Result.success(result.docs
+            .map((e) => EnrolledCourseModel.fromJson(e.data()))
+            .toList());
       } else {
         return const Result.success([]);
       }
@@ -31,9 +33,10 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
   }
 
   @override
-  Future<Result<EnrolledCourseModel>> createEnrolledCourse({required EnrolledCourseModel enrolledCourse}) async{
+  Future<Result<EnrolledCourseModel>> createEnrolledCourse(
+      {required EnrolledCourseModel enrolledCourse}) async {
     firestore.CollectionReference<Map<String, dynamic>> enrolledCourses =
-    _firebaseFirestore.collection('enrolledCourses');
+        _firebaseFirestore.collection('enrolledCourses');
     try {
       var balanceResult =
           await FirebaseUserService().getUserBalance(uid: enrolledCourse.uid);
@@ -41,7 +44,9 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
       if (balanceResult.isSuccess) {
         int previousBalance = balanceResult.resultValue!;
         if (previousBalance - enrolledCourse.total >= 0) {
-          await enrolledCourses.doc(enrolledCourse.id).set(enrolledCourse.toJson());
+          await enrolledCourses
+              .doc(enrolledCourse.id)
+              .set(enrolledCourse.toJson());
 
           var result = await enrolledCourses.doc(enrolledCourse.id).get();
 
@@ -61,10 +66,29 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
         return const Result.failed('Failed to create transaction data');
       }
     } catch (e) {
-      return const Result.failed('Failed to create transaction data');
+      if (e == FirebaseException) {
+        return Result.failed(e.toString());
+      } else {
+        return const Result.failed('Failed to create transaction data');
+      }
     }
   }
 
-
-
+  @override
+  Future<Result<EnrolledCourseModel>> getEnrolledCourseDetail(
+      {required String uid, required String id}) async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    _firebaseFirestore.doc('enrolledCourses/$id');
+    try {
+      DocumentSnapshot<Map<String, dynamic>> result =
+      await documentReference.get();
+      if (result.exists && result["uid"] == uid) {
+        return Result.success(EnrolledCourseModel.fromJson(result.data()!));
+      } else {
+        return const Result.failed('Detail not found');
+      }
+    } on FirebaseException catch (e) {
+      return Result.failed(e.message ?? 'Detail not found');
+    }
+  }
 }
