@@ -41,16 +41,20 @@ class FirebaseUserService implements UserDataSource {
 
   @override
   Future<Result<UserModel>> getUser({required String uid}) async {
-    DocumentReference<Map<String, dynamic>> documentReference =
-        _firestore.doc('users/$uid');
+    try {
+      DocumentReference<Map<String, dynamic>> documentReference =
+          _firestore.doc('users/$uid');
 
-    DocumentSnapshot<Map<String, dynamic>> result =
-        await documentReference.get();
+      DocumentSnapshot<Map<String, dynamic>> result =
+          await documentReference.get();
 
-    if (result.exists) {
-      return Result.success(UserModel.fromJson(result.data()!));
-    } else {
-      return const Result.failed('User not found');
+      if (result.exists) {
+        return Result.success(UserModel.fromJson(result.data()!));
+      } else {
+        return const Result.failed('User not found');
+      }
+    }on FirebaseException catch (e) {
+      return Result.failed(e.message ?? 'Failed to update user Data');
     }
   }
 
