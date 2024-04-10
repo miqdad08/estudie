@@ -5,7 +5,9 @@ import 'package:online_course_app/feature/detail_course/domain/usecases/create_d
 import 'package:online_course_app/feature/detail_course/domain/usecases/create_discussion/create_discussion_param.dart';
 import 'package:online_course_app/feature/detail_course/domain/usecases/create_review/create_review.dart';
 import 'package:online_course_app/feature/detail_course/domain/usecases/get_detail_course.dart';
+import 'package:online_course_app/feature/detail_course/domain/usecases/unlock_course.dart';
 
+import '../../../course/domain/entities/course.dart';
 import '../../domain/usecases/create_review/create_review_param.dart';
 
 part 'detail_course_event.dart';
@@ -15,20 +17,23 @@ part 'detail_course_state.dart';
 class DetailCourseBloc extends Bloc<DetailCourseEvent, DetailCourseState> {
   final GetDetailCourseUseCase _getDetailCourse;
   final CreateDiscussionUseCase _createDiscussion;
-  final CreateReviewUseCase  _createReview;
+  final CreateReviewUseCase _createReview;
+  final UnlockCourseUseCase _unlockCourse;
 
-  DetailCourseBloc(this._getDetailCourse, this._createDiscussion, this._createReview)
+  DetailCourseBloc(this._getDetailCourse, this._createDiscussion,
+      this._createReview, this._unlockCourse)
       : super(DetailCourseLoading()) {
     on<GetDetailCourse>(onGetDetailCourse);
     on<CreateDiscussion>(onCreateDiscussion);
     on<CreateReview>(onCreateReview);
+    on<UnlockCourse>(onUnlockCourse);
   }
 
   void onGetDetailCourse(
       GetDetailCourse event, Emitter<DetailCourseState> emit) async {
     emit(DetailCourseLoading());
     final detailCourse = await _getDetailCourse(
-      params: event.id,
+      params: event.course,
     );
     detailCourse.fold(
       (failure) => emit(DetailCourseFailed(message: failure.message)),
@@ -61,11 +66,29 @@ class DetailCourseBloc extends Bloc<DetailCourseEvent, DetailCourseState> {
       params: event.review,
     );
     createReview.fold(
-          (failure) => emit(CreateReviewSuccess(message: failure.message)),
-          (data) {
+      (failure) => emit(CreateReviewFailed(message: failure.message)),
+      (data) {
         emit(
           const CreateReviewSuccess(
             message: 'Success to create a new discussion',
+          ),
+        );
+      },
+    );
+  }
+
+  void onUnlockCourse(
+      UnlockCourse event, Emitter<DetailCourseState> emit) async {
+    emit(UnlockCourseLoading());
+    final unlockCourse = await _unlockCourse(
+      params: UnlockCourseParam(detailCourse: event.detailCourse, course: event.course),
+    );
+    unlockCourse.fold(
+      (failure) => emit(UnlockCourseFailed(message: failure.message)),
+      (data) {
+        emit(
+          const UnlockCourseSuccess(
+            message: 'Success to enroll this course',
           ),
         );
       },
