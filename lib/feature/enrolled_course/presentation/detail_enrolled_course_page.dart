@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:online_course_app/common_util/size/methods.dart';
-import 'package:online_course_app/feature/course/domain/entities/course.dart';
 import 'package:online_course_app/feature/detail_course/presentation/bloc/detail_course_bloc.dart';
-import 'package:online_course_app/feature/enrolled_course/data/model/enrolled_course.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -16,7 +14,6 @@ import '../../../common_widget/image/custom_image.dart';
 import '../../../config/constant/image_constant.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../detail_course/domain/entities/discussion.dart';
-import '../../detail_course/domain/entities/section.dart';
 import '../../detail_course/domain/entities/video.dart';
 import '../../detail_course/domain/usecases/create_discussion/create_discussion_param.dart';
 import '../../detail_course/presentation/methods/discussions.dart';
@@ -24,6 +21,7 @@ import '../../detail_course/presentation/methods/lessons.dart';
 
 class DetailEnrolledCourseArguments {
   final Video? video;
+
   // final Section? section;
   final EnrolledCourseEntity data;
   final List<Discussion>? discussions;
@@ -54,7 +52,7 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   late YoutubePlayerController _controller;
 
   Video? data;
-  // int index = 0;
+  int index = 0;
   int currentDuration = 0;
   int? endDuration;
   bool _isPlayerReady = false;
@@ -67,7 +65,7 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   @override
   void initState() {
     super.initState();
-    data = widget.arguments.data.lessons[0].videos[0];
+    data = widget.arguments.data.lessons[0];
     if (data != null) {
       setYoutubePlayer();
     }
@@ -86,34 +84,26 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   }
 
   void previousVideo() {
-    if (_isPlayerReady) {
-      Video? previousValue = widget.arguments.data.lessons
-          .expand((section) => section.videos.reversed)
-          .skipWhile((video) => video != data)
-          .skip(1)
-          .firstOrNull;
-      if (previousValue != null) {
-        setState(() {
-          data = previousValue;
-          loadVideo();
-        });
-      }
+    if (_isPlayerReady &&
+        widget.arguments.data.lessons[index] ==
+            widget.arguments.data.lessons.first) {
+      Video? previousValue = widget.arguments.data.lessons[index - 1];
+      setState(() {
+        data = previousValue;
+        loadVideo();
+      });
     }
   }
 
   void nextVideo() {
-    if ( _isPlayerReady) {
-      Video? nextValue = widget.arguments.data.lessons
-          .expand((section) => section.videos)
-          .skipWhile((video) => video != data)
-          .skip(1)
-          .firstOrNull;
-      if (nextValue != null) {
-        setState(() {
-          data = nextValue;
-          loadVideo();
-        });
-      }
+    if (_isPlayerReady &&
+        widget.arguments.data.lessons[index] ==
+            widget.arguments.data.lessons.last) {
+      Video? nextValue = widget.arguments.data.lessons[index + 1];
+      setState(() {
+        data = nextValue;
+        loadVideo();
+      });
     }
   }
 
@@ -131,9 +121,7 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
     //   index = widget.arguments.section!.videos.indexOf(data!);
     // }
 
-    index = widget.arguments.data.lessons
-        .indexWhere((sublist) => sublist.videos.contains(data!));
-    print('ceki2 ${widget.arguments.data.lessons.indexWhere((sublist) => sublist.videos.contains(data!))}');
+    index = widget.arguments.data.lessons.indexOf(data!);
   }
 
   void checkVideo() {
@@ -321,22 +309,22 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // if (widget.arguments.section != null) ...[
-          //   if (data != widget.arguments.section?.videos.first) ...[
-              CustomIconButton(
-                onTap: () {
-                  previousVideo();
-                },
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                height: 55,
-                width: 55,
-                child: CustomImageWidget(
-                  imagePath: IconsConstants.icBack,
-                ),
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // if (widget.arguments.section != null) ...[
+            //   if (data != widget.arguments.section?.videos.first) ...[
+            CustomIconButton(
+              onTap: () {
+                previousVideo();
+              },
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              height: 55,
+              width: 55,
+              child: CustomImageWidget(
+                imagePath: IconsConstants.icBack,
               ),
+            ),
             // ] else ...[
             //   const SizedBox(
             //     height: 55,
@@ -354,7 +342,9 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               height: 55,
               width: 55,
-              child: CustomImageWidget(imagePath: IconsConstants.icNext,),
+              child: CustomImageWidget(
+                imagePath: IconsConstants.icNext,
+              ),
               // child: CustomImageWidget(
               //   imagePath: data == widget.arguments.section?.videos.last &&
               //           widget.arguments.data.lessons.last.videos.last ==
@@ -364,8 +354,8 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
               // ),
             ),
           ]
-        // ],
-      ),
+          // ],
+          ),
     );
   }
 
