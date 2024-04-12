@@ -37,5 +37,5 @@ Map<String, dynamic> _$$EnrolledCourseModelImplToJson(
       'category': instance.category,
       'total': instance.total,
       'rating': instance.rating,
-      'lessons': instance.lessons,
+      'lessons': instance.lessons.map((e) => e.toJson()).toList(),
     };
