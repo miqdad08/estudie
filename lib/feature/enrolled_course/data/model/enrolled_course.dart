@@ -19,6 +19,7 @@ class EnrolledCourseModel with _$EnrolledCourseModel {
     String? posterPath,
     required String category,
     required int total,
+    @Default(0) int? progress,
     double? rating,
     // required List<SectionModel> lessons,
     required List<VideoModel> lessons,
@@ -36,6 +37,7 @@ class EnrolledCourseModel with _$EnrolledCourseModel {
       uid: uid,
       category: category,
       total: total,
+      progress: progress,
       rating: rating,
       posterPath: posterPath,
       price: price,
@@ -55,6 +57,7 @@ class EnrolledCourseModel with _$EnrolledCourseModel {
       rating: enrolledCourse.rating,
       posterPath: enrolledCourse.posterPath,
       price: enrolledCourse.price,
+      progress: enrolledCourse.progress,
       lessons: List<VideoModel>.from(enrolledCourse.lessons.map((lesson) => VideoModel.fromEntity(lesson))),
     );
   }
