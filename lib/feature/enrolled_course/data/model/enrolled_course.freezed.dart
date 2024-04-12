@@ -365,10 +365,10 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
       uid: uid,
       category: category,
       total: total,
+      progress: progress,
       rating: rating,
       posterPath: posterPath,
       price: price,
-      progress: progress,
       lessons: lessons.map((lesson) => lesson.toEntity()).toList(),
     );
   }
