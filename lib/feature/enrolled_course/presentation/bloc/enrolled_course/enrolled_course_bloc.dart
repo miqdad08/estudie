@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
 
-import '../../domain/usecases/get_enrolled_course.dart';
+import '../../../domain/usecases/get_enrolled_course.dart';
 
 part 'enrolled_course_event.dart';
 

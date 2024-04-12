@@ -11,4 +11,20 @@ class EnrolledCourseDetailInitial extends EnrolledCourseDetailState {}
 
 class EnrolledCourseDetailLoading extends EnrolledCourseDetailState {}
 
-class EnrolledCourseDetailFailed extends EnrolledCourseDetailState {}
+class EnrolledCourseDetailLoaded extends EnrolledCourseDetailState {
+  final EnrolledCourseEntity course;
+
+  const EnrolledCourseDetailLoaded({required this.course});
+
+  @override
+  List<Object> get props => [course];
+}
+
+class EnrolledCourseDetailFailed extends EnrolledCourseDetailState {
+  final String message;
+
+  const EnrolledCourseDetailFailed({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

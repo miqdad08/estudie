@@ -7,7 +7,14 @@ abstract class EnrolledCourseDetailEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class NextVideo extends EnrolledCourseDetailEvent {}
+class NextVideo extends EnrolledCourseDetailEvent {
+  final SetVideoIsDoneParam param;
+
+  const NextVideo({required this.param});
+
+  @override
+  List<Object?> get props => [param];
+}
 
 
 
