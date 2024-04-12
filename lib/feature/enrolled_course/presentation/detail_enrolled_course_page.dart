@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:online_course_app/common_util/extensions/build_context_extension.dart';
 import 'package:online_course_app/common_util/size/methods.dart';
 import 'package:online_course_app/feature/detail_course/presentation/bloc/detail_course_bloc.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/usecases/set_video_is_done/set_video_is_done_param.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../../common_util/youtube_link_format.dart';
@@ -13,11 +16,13 @@ import '../../../common_widget/icon/custom_icon_button.dart';
 import '../../../common_widget/image/custom_image.dart';
 import '../../../config/constant/image_constant.dart';
 import '../../../config/theme/app_theme.dart';
+import '../../../injection_container.dart';
 import '../../detail_course/domain/entities/discussion.dart';
 import '../../detail_course/domain/entities/video.dart';
 import '../../detail_course/domain/usecases/create_discussion/create_discussion_param.dart';
 import '../../detail_course/presentation/methods/discussions.dart';
 import '../../detail_course/presentation/methods/lessons.dart';
+import 'bloc/enrolled_course_detail/enrolled_course_detail_bloc.dart';
 
 class DetailEnrolledCourseArguments {
   final Video? video;
@@ -77,16 +82,11 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         data!.videoUrl,
       ),
     );
-    // index = widget.arguments.section!.videos.indexOf(data!);
-    // index = widget.arguments.data.lessons
-    //     .indexWhere((sublist) => sublist.videos.contains(data!));
-    print('ceki');
+    index = widget.arguments.data.lessons.indexOf(data!);
   }
 
   void previousVideo() {
-    if (_isPlayerReady &&
-        widget.arguments.data.lessons[index] ==
-            widget.arguments.data.lessons.first) {
+    if (_isPlayerReady && data != widget.arguments.data.lessons.first) {
       Video? previousValue = widget.arguments.data.lessons[index - 1];
       setState(() {
         data = previousValue;
@@ -96,14 +96,14 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   }
 
   void nextVideo() {
-    if (_isPlayerReady &&
-        widget.arguments.data.lessons[index] ==
-            widget.arguments.data.lessons.last) {
+    if (_isPlayerReady && data != widget.arguments.data.lessons.last) {
       Video? nextValue = widget.arguments.data.lessons[index + 1];
       setState(() {
         data = nextValue;
         loadVideo();
       });
+    }else{
+      context.pop();
     }
   }
 
@@ -117,10 +117,6 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         loop: false,
       ),
     );
-    // if (widget.arguments.section != null) {
-    //   index = widget.arguments.section!.videos.indexOf(data!);
-    // }
-
     index = widget.arguments.data.lessons.indexOf(data!);
   }
 
@@ -167,46 +163,49 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         fullScreen = false;
       },
       builder: (context, player) {
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            switch (orientation) {
-              case Orientation.portrait:
-                return Scaffold(
-                  appBar: AppBar(
-                    automaticallyImplyLeading: false,
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          context.pop();
-                        },
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
+        return BlocProvider(
+          create: (context) => EnrolledCourseDetailBloc(sl()),
+          child: OrientationBuilder(
+            builder: (context, orientation) {
+              switch (orientation) {
+                case Orientation.portrait:
+                  return Scaffold(
+                    appBar: AppBar(
+                      automaticallyImplyLeading: false,
+                      actions: [
+                        IconButton(
+                          onPressed: () {
+                            context.pop();
+                          },
+                          icon: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                      centerTitle: false,
+                      title: Text(
+                        widget.arguments.data.title,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimaryContainer
+                              .withOpacity(1),
+                          fontSize: 18,
                         ),
-                      )
-                    ],
-                    centerTitle: false,
-                    title: Text(
-                      widget.arguments.data.title,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color:
-                            theme.colorScheme.onPrimaryContainer.withOpacity(1),
-                        fontSize: 18,
                       ),
                     ),
-                  ),
-                  resizeToAvoidBottomInset: true,
-                  body: buildTabBar(context, player),
-                );
-              case Orientation.landscape:
-                return Scaffold(
-                  resizeToAvoidBottomInset: true,
-                  body: player,
-                  // body: buildBody(context),
-                );
-            }
-          },
+                    resizeToAvoidBottomInset: true,
+                    body: buildTabBar(context, player),
+                  );
+                case Orientation.landscape:
+                  return Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    body: player,
+                    // body: buildBody(context),
+                  );
+              }
+            },
+          ),
         );
       },
     );
@@ -254,11 +253,18 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
-              child: lessons(
-                context,
-                widget.arguments.data.lessons,
-                true,
-                onTapVideo: (video, section) {},
+              child: BlocBuilder<EnrolledCourseDetailBloc,
+                  EnrolledCourseDetailState>(
+                builder: (context, state) {
+                  return lessons(
+                    context,
+                    state is EnrolledCourseDetailLoaded
+                        ? state.course.lessons
+                        : widget.arguments.data.lessons,
+                    true,
+                    onTapVideo: (video, section) {},
+                  );
+                },
               ),
             ),
             BlocBuilder<DetailCourseBloc, DetailCourseState>(
@@ -309,11 +315,11 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // if (widget.arguments.section != null) ...[
-            //   if (data != widget.arguments.section?.videos.first) ...[
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // if (widget.arguments.section != null) ...[
+          if (data != widget.arguments.data.lessons.first) ...[
             CustomIconButton(
               onTap: () {
                 previousVideo();
@@ -325,37 +331,49 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
                 imagePath: IconsConstants.icBack,
               ),
             ),
-            // ] else ...[
-            //   const SizedBox(
-            //     height: 55,
-            //     width: 55,
-            //   ),
-            // ],
-            Text(
-              data?.name ?? '',
-              style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
-            ),
-            CustomIconButton(
-              onTap: () {
-                nextVideo();
-              },
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+          ] else ...[
+            const SizedBox(
               height: 55,
               width: 55,
-              child: CustomImageWidget(
-                imagePath: IconsConstants.icNext,
-              ),
-              // child: CustomImageWidget(
-              //   imagePath: data == widget.arguments.section?.videos.last &&
-              //           widget.arguments.data.lessons.last.videos.last ==
-              //               widget.arguments.section?.videos.last
-              //       ? IconsConstants.icCheck
-              //       : IconsConstants.icNext,
-              // ),
             ),
-          ]
-          // ],
+          ],
+          Text(
+            data?.name ?? '',
+            style: theme.textTheme.titleLarge!.copyWith(fontSize: 18),
           ),
+          BlocConsumer<EnrolledCourseDetailBloc, EnrolledCourseDetailState>(
+            listener: (context, state) {
+              if (state is EnrolledCourseDetailLoaded) {
+                nextVideo();
+              }
+              if (state is EnrolledCourseDetailFailed) {
+                context.showSnackBar(state.message);
+              }
+            },
+            builder: (context, state) {
+              return CustomIconButton(
+                onTap: () {
+                  context.read<EnrolledCourseDetailBloc>().add(NextVideo(
+                      param: SetVideoIsDoneParam(
+                          video: data!, course: widget.arguments.data)));
+                },
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                height: 55,
+                width: 55,
+                child: state is EnrolledCourseDetailLoading
+                    ? const SizedBox(
+                        child: CupertinoActivityIndicator(color: Colors.white,),
+                      )
+                    : CustomImageWidget(
+                        imagePath: data == widget.arguments.data.lessons.last
+                            ? IconsConstants.icCheck
+                            : IconsConstants.icNext,
+                      ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
