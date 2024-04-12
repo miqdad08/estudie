@@ -14,7 +14,7 @@ class EnrolledCourseEntity extends Equatable {
   final String category;
   final double? rating;
   final int total;
-  // final List<Section> lessons;
+  final int? progress;
   final List<Video> lessons;
 
   const EnrolledCourseEntity({
@@ -28,6 +28,7 @@ class EnrolledCourseEntity extends Equatable {
     required this.category,
     required this.rating,
     required this.total,
+    this.progress = 0,
     required this.lessons,
   });
 
@@ -42,6 +43,7 @@ class EnrolledCourseEntity extends Equatable {
     String? category,
     double? rating,
     int? total,
+    int? progress,
     List<Video>? lessons,
   }) {
     return EnrolledCourseEntity(
@@ -55,6 +57,7 @@ class EnrolledCourseEntity extends Equatable {
       category: category ?? this.category,
       rating: rating ?? this.rating,
       total: total ?? this.total,
+      progress: progress ?? this.progress,
       lessons: lessons ?? this.lessons,
     );
   }
@@ -68,6 +71,7 @@ class EnrolledCourseEntity extends Equatable {
       uid: 'ui',
       category: enrolledCourse.category,
       total: 0,
+      progress: 0,
       rating: enrolledCourse.rating,
       posterPath: enrolledCourse.posterPath,
       price: enrolledCourse.price,

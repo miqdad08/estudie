@@ -18,6 +18,7 @@ _$EnrolledCourseModelImpl _$$EnrolledCourseModelImplFromJson(
       posterPath: json['posterPath'] as String?,
       category: json['category'] as String,
       total: json['total'] as int,
+      progress: json['progress'] as int? ?? 0,
       rating: (json['rating'] as num?)?.toDouble(),
       lessons: (json['lessons'] as List<dynamic>)
           .map((e) => VideoModel.fromJson(e as Map<String, dynamic>))
@@ -36,6 +37,7 @@ Map<String, dynamic> _$$EnrolledCourseModelImplToJson(
       'posterPath': instance.posterPath,
       'category': instance.category,
       'total': instance.total,
+      'progress': instance.progress,
       'rating': instance.rating,
       'lessons': instance.lessons.map((e) => e.toJson()).toList(),
     };

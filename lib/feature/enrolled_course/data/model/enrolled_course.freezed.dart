@@ -29,6 +29,7 @@ mixin _$EnrolledCourseModel {
   String? get posterPath => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
   int get total => throw _privateConstructorUsedError;
+  int? get progress => throw _privateConstructorUsedError;
   double? get rating =>
       throw _privateConstructorUsedError; // required List<SectionModel> lessons,
   List<VideoModel> get lessons => throw _privateConstructorUsedError;
@@ -55,6 +56,7 @@ abstract class $EnrolledCourseModelCopyWith<$Res> {
       String? posterPath,
       String category,
       int total,
+      int? progress,
       double? rating,
       List<VideoModel> lessons});
 }
@@ -81,6 +83,7 @@ class _$EnrolledCourseModelCopyWithImpl<$Res, $Val extends EnrolledCourseModel>
     Object? posterPath = freezed,
     Object? category = null,
     Object? total = null,
+    Object? progress = freezed,
     Object? rating = freezed,
     Object? lessons = null,
   }) {
@@ -121,6 +124,10 @@ class _$EnrolledCourseModelCopyWithImpl<$Res, $Val extends EnrolledCourseModel>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
+      progress: freezed == progress
+          ? _value.progress
+          : progress // ignore: cast_nullable_to_non_nullable
+              as int?,
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -151,6 +158,7 @@ abstract class _$$EnrolledCourseModelImplCopyWith<$Res>
       String? posterPath,
       String category,
       int total,
+      int? progress,
       double? rating,
       List<VideoModel> lessons});
 }
@@ -175,6 +183,7 @@ class __$$EnrolledCourseModelImplCopyWithImpl<$Res>
     Object? posterPath = freezed,
     Object? category = null,
     Object? total = null,
+    Object? progress = freezed,
     Object? rating = freezed,
     Object? lessons = null,
   }) {
@@ -215,6 +224,10 @@ class __$$EnrolledCourseModelImplCopyWithImpl<$Res>
           ? _value.total
           : total // ignore: cast_nullable_to_non_nullable
               as int,
+      progress: freezed == progress
+          ? _value.progress
+          : progress // ignore: cast_nullable_to_non_nullable
+              as int?,
       rating: freezed == rating
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
@@ -240,6 +253,7 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
       this.posterPath,
       required this.category,
       required this.total,
+      this.progress = 0,
       this.rating,
       required final List<VideoModel> lessons})
       : _lessons = lessons;
@@ -267,6 +281,9 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
   @override
   final int total;
   @override
+  @JsonKey()
+  final int? progress;
+  @override
   final double? rating;
 // required List<SectionModel> lessons,
   final List<VideoModel> _lessons;
@@ -280,7 +297,7 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
 
   @override
   String toString() {
-    return 'EnrolledCourseModel(id: $id, idCourse: $idCourse, idTeacher: $idTeacher, title: $title, uid: $uid, price: $price, posterPath: $posterPath, category: $category, total: $total, rating: $rating, lessons: $lessons)';
+    return 'EnrolledCourseModel(id: $id, idCourse: $idCourse, idTeacher: $idTeacher, title: $title, uid: $uid, price: $price, posterPath: $posterPath, category: $category, total: $total, progress: $progress, rating: $rating, lessons: $lessons)';
   }
 
   @override
@@ -301,6 +318,8 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.total, total) || other.total == total) &&
+            (identical(other.progress, progress) ||
+                other.progress == progress) &&
             (identical(other.rating, rating) || other.rating == rating) &&
             const DeepCollectionEquality().equals(other._lessons, _lessons));
   }
@@ -318,6 +337,7 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
       posterPath,
       category,
       total,
+      progress,
       rating,
       const DeepCollectionEquality().hash(_lessons));
 
@@ -348,6 +368,7 @@ class _$EnrolledCourseModelImpl implements _EnrolledCourseModel {
       rating: rating,
       posterPath: posterPath,
       price: price,
+      progress: progress,
       lessons: lessons.map((lesson) => lesson.toEntity()).toList(),
     );
   }
@@ -364,6 +385,7 @@ abstract class _EnrolledCourseModel implements EnrolledCourseModel {
       final String? posterPath,
       required final String category,
       required final int total,
+      final int? progress,
       final double? rating,
       required final List<VideoModel> lessons}) = _$EnrolledCourseModelImpl;
 
@@ -388,6 +410,8 @@ abstract class _EnrolledCourseModel implements EnrolledCourseModel {
   String get category;
   @override
   int get total;
+  @override
+  int? get progress;
   @override
   double? get rating;
   @override // required List<SectionModel> lessons,
