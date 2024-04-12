@@ -35,7 +35,9 @@ import 'package:online_course_app/feature/enrolled_course/data/repository/enroll
 import 'package:online_course_app/feature/enrolled_course/domain/repository/enrolled_course_repository.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/create_enrolled_course.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/get_enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/usecases/set_is_video_done.dart';
 import 'package:online_course_app/feature/enrolled_course/presentation/bloc/enrolled_course/enrolled_course_bloc.dart';
+import 'package:online_course_app/feature/enrolled_course/presentation/bloc/enrolled_course_detail/enrolled_course_detail_bloc.dart';
 
 import 'feature/auth/domain/usecases/login/login.dart';
 import 'feature/detail_course/data/data_source/detail_course_data_source.dart';
@@ -96,6 +98,8 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetEnrolledCoursesUseCase>(
       GetEnrolledCoursesUseCase(sl(), sl()));
+  sl.registerSingleton<SetVideoIsDoneUseCase>(
+      SetVideoIsDoneUseCase(sl()));
 
   //Bloc
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl(), sl(), sl()));
@@ -107,4 +111,5 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<TeacherBloc>(() => TeacherBloc(sl()));
   sl.registerFactory<DetailTeacherBloc>(() => DetailTeacherBloc(sl()));
   sl.registerFactory<EnrolledCourseBloc>(() => EnrolledCourseBloc(sl()));
+  sl.registerFactory<EnrolledCourseDetailBloc>(() => EnrolledCourseDetailBloc(sl()));
 }
