@@ -31,7 +31,7 @@ class UnlockCourseUseCase
     int enrolledCourseTime = DateTime.now().millisecondsSinceEpoch;
     String? loggedInUser = _authRepository.getLoggedInUserId();
     var result = await _repository.unlockCourse(
-        detailCourse: params!.detailCourse.copyWith(isUnlock: true), course: params.course);
+        detailCourse: params!.detailCourse.copyWith(isUnlock: false), course: params.course);
     return result.fold(
       (failure) => Left(failure),
       (data) async {
