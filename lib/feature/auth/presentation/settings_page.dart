@@ -25,7 +25,7 @@ class SettingsPage extends StatelessWidget {
         return ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
                   verticalSpace(20),
