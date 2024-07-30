@@ -27,4 +27,9 @@ abstract class UserRepository {
     required User user,
     required File imageFile,
   });
+
+  FutureEither<User> setIdLastProgressCourse({
+    required String uid,
+    required String idEnrolledCourse,
+  });
 }

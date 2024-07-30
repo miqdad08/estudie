@@ -28,3 +28,12 @@ class CoursesFailed extends CourseState {
   @override
   List<Object> get props => [message];
 }
+
+class LastProgressCourseLoaded extends CourseState {
+  final EnrolledCourseEntity data;
+
+  const LastProgressCourseLoaded({required this.data});
+
+  @override
+  List<Object> get props => [data];
+}

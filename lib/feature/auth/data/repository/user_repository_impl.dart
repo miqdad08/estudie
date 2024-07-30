@@ -92,4 +92,14 @@ class UserRepositoryImpl implements UserRepository {
       return Left(Failure(message: result.errorMessage!));
     }
   }
+
+  @override
+  FutureEither<User> setIdLastProgressCourse({required String uid, required String idEnrolledCourse}) async{
+    final result = await _userService.setIdLastProgressCourse(uid: uid, idEnrolledCourse: idEnrolledCourse);
+    if (result.isSuccess) {
+      return Right(result.resultValue!.toEntity());
+    } else {
+      return Left(Failure(message: result.errorMessage!));
+    }
+  }
 }

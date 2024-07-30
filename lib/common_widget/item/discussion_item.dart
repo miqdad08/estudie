@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:online_course_app/config/constant/image_constant.dart';
 import 'package:online_course_app/feature/detail_course/domain/entities/discussion.dart';
 
 import '../../common_util/size/methods.dart';
@@ -37,7 +38,7 @@ class DiscussionItem extends StatelessWidget {
                 CustomImageWidget(
                   height: 40,
                   width: 40,
-                  imagePath: discussion.photoUser,
+                  imagePath: discussion.photoUser ?? ImageConstant.imgUserPlaceholder,
                   radius: BorderRadius.circular(100),
                 ),
                 horizontalSpace(10),

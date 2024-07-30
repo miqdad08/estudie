@@ -25,6 +25,25 @@ class CreateDiscussion extends DetailCourseEvent {
   List<Object> get props => [discussion];
 }
 
+class GetDiscussions extends DetailCourseEvent {
+  final String idCourse;
+
+  const GetDiscussions({required this.idCourse});
+
+  @override
+  List<Object> get props => [idCourse];
+}
+
+class GetUserEnrolledCourse extends DetailCourseEvent {
+  final String idCourse;
+  final Video video;
+
+  const GetUserEnrolledCourse({required this.idCourse, required this.video});
+
+  @override
+  List<Object> get props => [idCourse, video];
+}
+
 
 class CreateReview extends DetailCourseEvent {
   final CreateReviewParam review;

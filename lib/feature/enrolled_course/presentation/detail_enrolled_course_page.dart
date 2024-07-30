@@ -26,16 +26,11 @@ import 'bloc/enrolled_course_detail/enrolled_course_detail_bloc.dart';
 
 class DetailEnrolledCourseArguments {
   final Video? video;
-
-  // final Section? section;
   final EnrolledCourseEntity data;
-  final List<Discussion>? discussions;
 
   DetailEnrolledCourseArguments({
     this.video,
-    // this.section,
     required this.data,
-    this.discussions,
   });
 }
 
@@ -62,6 +57,7 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   int? endDuration;
   bool _isPlayerReady = false;
   bool fullScreen = false;
+  bool isNextVideo = false;
   String selectedCategory = "About";
   List<File> photoAttachments = [];
   TextEditingController titleCont = TextEditingController();
@@ -70,10 +66,24 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   @override
   void initState() {
     super.initState();
-    data = widget.arguments.data.lessons[0];
+    if (widget.arguments.video != null) {
+      index = widget.arguments.data.lessons.indexOf(widget.arguments.video!);
+    } else if (widget.arguments.data.progress ==
+        widget.arguments.data.lessons.length) {
+      index = index = widget.arguments.data.progress! - 1;
+    } else {
+      index = index = widget.arguments.data.progress!;
+    }
+    data = widget.arguments.data.lessons[index];
     if (data != null) {
       setYoutubePlayer();
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   void loadVideo() {
@@ -83,6 +93,10 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
       ),
     );
     index = widget.arguments.data.lessons.indexOf(data!);
+    setState(() {
+      isNextVideo = false;
+      _isPlayerReady = true;
+    });
   }
 
   void previousVideo() {
@@ -99,10 +113,14 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
     if (_isPlayerReady && data != widget.arguments.data.lessons.last) {
       Video? nextValue = widget.arguments.data.lessons[index + 1];
       setState(() {
+        currentDuration = 0;
+        endDuration = 100;
+        isNextVideo = true;
         data = nextValue;
+        // _controller.pause();
         loadVideo();
       });
-    }else{
+    } else if (data == widget.arguments.data.lessons.last) {
       context.pop();
     }
   }
@@ -121,51 +139,61 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
   }
 
   void checkVideo() {
-    setState(() {
-      currentDuration = _controller.value.position.inSeconds;
-      if (_controller.metadata.duration.inSeconds != 0) {
-        endDuration = _controller.metadata.duration.inSeconds;
-        setState(() {});
-      }
-    });
-    if (_controller.value.position.inSeconds ==
-        _controller.metadata.duration.inSeconds - 1) {}
+    if(!isNextVideo && _isPlayerReady){
+      setState(() {
+        currentDuration = _controller.value.position.inSeconds;
+        if (_controller.metadata.duration.inSeconds != 0) {
+          endDuration = _controller.metadata.duration.inSeconds;
+          setState(() {});
+        }
+      });
+      if (_controller.value.position.inSeconds ==
+          _controller.metadata.duration.inSeconds - 1) {}
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
-        aspectRatio: 16 / 9,
-        controller: _controller,
-        showVideoProgressIndicator: true,
-        topActions: const [],
-        bottomActions: [
-          Expanded(
-            child: sliderVideo(context),
+    return BlocProvider(
+      create: (context) => EnrolledCourseDetailBloc(sl(), sl()),
+      child: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          aspectRatio: 16 / 9,
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          topActions: const [],
+          onEnded: (_) {
+            context.read<EnrolledCourseDetailBloc>().add(NextVideo(
+                param: SetVideoIsDoneParam(
+                    video: data!, course: widget.arguments.data)));
+          },
+          bottomActions: [
+            Expanded(
+              child: sliderVideo(context),
+            ),
+          ],
+          onReady: () {
+            setState(() {
+              _isPlayerReady = true;
+            });
+            _controller.addListener(() {
+              checkVideo();
+            });
+
+          },
+          progressColors: const ProgressBarColors(
+            playedColor: Colors.amber,
+            handleColor: Colors.amberAccent,
           ),
-        ],
-        onReady: () {
-          _controller.addListener(() {
-            checkVideo();
-          });
-          _isPlayerReady = true;
-        },
-        progressColors: const ProgressBarColors(
-          playedColor: Colors.amber,
-          handleColor: Colors.amberAccent,
         ),
-      ),
-      onEnterFullScreen: () {
-        fullScreen = true;
-      },
-      onExitFullScreen: () {
-        fullScreen = false;
-      },
-      builder: (context, player) {
-        return BlocProvider(
-          create: (context) => EnrolledCourseDetailBloc(sl()),
-          child: OrientationBuilder(
+        onEnterFullScreen: () {
+          fullScreen = true;
+        },
+        onExitFullScreen: () {
+          fullScreen = false;
+        },
+        builder: (context, player) {
+          return OrientationBuilder(
             builder: (context, orientation) {
               switch (orientation) {
                 case Orientation.portrait:
@@ -205,9 +233,9 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
                   );
               }
             },
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -219,7 +247,6 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
           SliverAppBar(
             pinned: true,
             elevation: 0,
-            // backgroundColor: AppColors.background,
             automaticallyImplyLeading: false,
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(167),
@@ -238,7 +265,6 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
           SliverAppBar(
             pinned: true,
             elevation: 0,
-            // backgroundColor: AppColors.background,
             automaticallyImplyLeading: false,
             shape: Border(
                 bottom: BorderSide(
@@ -262,31 +288,57 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
                         ? state.course.lessons
                         : widget.arguments.data.lessons,
                     true,
-                    onTapVideo: (video, section) {},
+                    isSelectedVideo: data,
+                    onTapVideo: (video) {
+                      if(_isPlayerReady){
+                        setState(() {
+                          data = video;
+                          loadVideo();
+                        });
+                      }
+                    },
                   );
                 },
               ),
             ),
-            BlocBuilder<DetailCourseBloc, DetailCourseState>(
-              builder: (context, state) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: discussions(
-                    context,
-                    widget.arguments.discussions,
-                    titleCont: titleCont,
-                    detailsCont: detailsCont,
-                    photoAttacments: photoAttachments,
-                    onAddImage: (image) {
-                      photoAttachments.add(image);
-                    },
-                    onRemove: (File image) {
-                      photoAttachments.remove(image);
-                    },
-                    onSubmit: () => onSubmitDiscussions(context),
-                  ),
-                );
-              },
+            BlocProvider(
+              create: (context) => DetailCourseBloc(
+                  sl(), sl(), sl(), sl(), sl(), sl())
+                ..add(GetDiscussions(idCourse: widget.arguments.data.idCourse)),
+              child: BlocConsumer<DetailCourseBloc, DetailCourseState>(
+                listener: (context, state) {
+                  if (state is CreateDiscussionFailed) {
+                    context.showSnackBar(state.message);
+                  }
+                  if (state is CreateDiscussionSuccess) {
+                    context.showSnackBar(state.message);
+                    context.read<DetailCourseBloc>().add(
+                          GetDiscussions(
+                            idCourse: widget.arguments.data.idCourse,
+                          ),
+                        );
+                  }
+                },
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: discussions(
+                      context,
+                      state is ListDiscussionsLoaded ? state.data : [],
+                      titleCont: titleCont,
+                      detailsCont: detailsCont,
+                      photoAttacments: photoAttachments,
+                      onAddImage: (image) {
+                        photoAttachments.add(image);
+                      },
+                      onRemove: (File image) {
+                        photoAttachments.remove(image);
+                      },
+                      onSubmit: () => onSubmitDiscussions(context),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -318,7 +370,6 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // if (widget.arguments.section != null) ...[
           if (data != widget.arguments.data.lessons.first) ...[
             CustomIconButton(
               onTap: () {
@@ -353,16 +404,20 @@ class _DetailEnrolledCoursePageState extends State<DetailEnrolledCoursePage> {
             builder: (context, state) {
               return CustomIconButton(
                 onTap: () {
-                  context.read<EnrolledCourseDetailBloc>().add(NextVideo(
-                      param: SetVideoIsDoneParam(
-                          video: data!, course: widget.arguments.data)));
+                  if (_isPlayerReady) {
+                    context.read<EnrolledCourseDetailBloc>().add(NextVideo(
+                        param: SetVideoIsDoneParam(
+                            video: data!, course: widget.arguments.data)));
+                  }
                 },
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 height: 55,
                 width: 55,
                 child: state is EnrolledCourseDetailLoading
                     ? const SizedBox(
-                        child: CupertinoActivityIndicator(color: Colors.white,),
+                        child: CupertinoActivityIndicator(
+                          color: Colors.white,
+                        ),
                       )
                     : CustomImageWidget(
                         imagePath: data == widget.arguments.data.lessons.last

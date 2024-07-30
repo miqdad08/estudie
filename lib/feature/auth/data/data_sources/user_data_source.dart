@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../../../../core/resources/result.dart';
+import '../../../../core/resources/type_defs.dart';
 import '../models/user/user.dart';
 
 abstract class UserDataSource {
@@ -26,5 +27,10 @@ abstract class UserDataSource {
   Future<Result<UserModel>> uploadProfilePicture({
     required UserModel user,
     required File imageFile,
+  });
+
+  Future<Result<UserModel>> setIdLastProgressCourse({
+    required String uid,
+    required String idEnrolledCourse,
   });
 }

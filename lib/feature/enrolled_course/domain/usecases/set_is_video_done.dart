@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:online_course_app/common_util/logger.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/entities/enrolled_course.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/repository/enrolled_course_repository.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/set_video_is_done/set_video_is_done_param.dart';
@@ -21,7 +22,8 @@ class SetVideoIsDoneUseCase extends UseCase<Either<Failure, EnrolledCourseEntity
         break;
       }
     }
-    var result = await repository.setIsDoneVideo(course: params.course.copyWith(lessons: lessons));
+    int progress = lessons.where((element) => element.isDone == true).length;
+    var result = await repository.setIsDoneVideo(course: params.course.copyWith(lessons: lessons, progress: progress));
     return result.fold((failure) => Left(failure), (data) => Right(data));
   }
 }

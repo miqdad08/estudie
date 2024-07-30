@@ -21,4 +21,8 @@ abstract class EnrolledCourseRepository {
     required EnrolledCourseEntity course,
     Video? video,
   });
+
+  FutureEither<EnrolledCourseEntity> getLastProgressCourse({
+    required String idLastProgressCourse,
+  });
 }

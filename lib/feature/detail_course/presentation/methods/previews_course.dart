@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:online_course_app/common_widget/image/custom_image.dart';
-import 'package:online_course_app/common_widget/video_player/video_player_widget.dart';
 
 import '../../../../common_widget/icon/custom_icon_button.dart';
 import '../../../../config/constant/image_constant.dart';
@@ -14,10 +12,12 @@ Widget previewCourse(
 }) =>
     GestureDetector(
       onTap: () {
-        context.goNamed(VideoPlayerView.routeName, extra: previewVideo.videoUrl);
-        // ModalVideoPlayer.show(
+        // ModalBottom.showWithTopBar(
         //   context,
-        //   videoUrl: previewVideo.videoUrl,
+        //   view: VideoPlayerPage(
+        //     arguments: previewVideo,
+        //   ),
+        //   title: 'Preview Course',
         // );
       },
       child: Container(

@@ -79,18 +79,20 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
   @override
   Future<Result<EnrolledCourseModel>> getEnrolledCourseDetail(
       {required String uid, required String id}) async {
-    DocumentReference<Map<String, dynamic>> documentReference =
-        _firebaseFirestore.doc('enrolledCourses/$id');
+    firestore.CollectionReference<Map<String, dynamic>> enrolledCourses =
+    _firebaseFirestore.collection('enrolledCourses');
+
     try {
-      DocumentSnapshot<Map<String, dynamic>> result =
-          await documentReference.get();
-      if (result.exists && result["uid"] == uid) {
-        return Result.success(EnrolledCourseModel.fromJson(result.data()!));
+      var result = await enrolledCourses.where('uid', isEqualTo: uid).get();
+      QueryDocumentSnapshot<Map<String, dynamic>> data = result.docs.firstWhere((item) => item["idCourse"] == id);
+      EnrolledCourseModel resultData = EnrolledCourseModel.fromJson(data.data());
+      if (data.exists) {
+        return Result.success(resultData);
       } else {
-        return const Result.failed('Detail not found');
+        return const Result.failed('Failed to get user enrolled course');
       }
-    } on FirebaseException catch (e) {
-      return Result.failed(e.message ?? 'Detail not found');
+    } catch (e) {
+      return const Result.failed('Failed to get user enrolled course');
     }
   }
 
@@ -104,18 +106,31 @@ class FirebaseEnrolledCourseService implements EnrolledCourseDataSource {
       DocumentSnapshot<Map<String, dynamic>> result =
           await documentReference.get();
       if (result.exists) {
-        LoggerUtils.loggerResponse(result.data());
-        LoggerUtils.loggerResponse(course.toJson());
-        LoggerUtils.loggerResponse(
-            "isSame ${course.toJson() == result.data()}");
         EnrolledCourseModel updatedCourse =
             EnrolledCourseModel.fromJson(result.data()!);
         return Result.success(updatedCourse);
       } else {
-        return const Result.failed('Failed to update set video 2');
+        return const Result.failed('Failed to update set video');
       }
     } on FirebaseException catch (e) {
-      return Result.failed(e.message ?? 'Failed to update set video $e');
+      return Result.failed(e.message ?? 'Failed to update set video');
+    }
+  }
+
+  @override
+  Future<Result<EnrolledCourseModel>> getLastProgressCourse({required String idLastProgressCourse}) async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+    _firebaseFirestore.doc('enrolledCourses/$idLastProgressCourse');
+    try {
+      DocumentSnapshot<Map<String, dynamic>> result =
+      await documentReference.get();
+      if (result.exists) {
+        return Result.success(EnrolledCourseModel.fromJson(result.data()!));
+      } else {
+        return const Result.failed('Detail not found');
+      }
+    } on FirebaseException catch (e) {
+      return Result.failed(e.message ?? 'Detail not found');
     }
   }
 }

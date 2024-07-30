@@ -24,6 +24,7 @@ import 'package:online_course_app/feature/detail_course/domain/repository/detail
 import 'package:online_course_app/feature/detail_course/domain/usecases/create_discussion/create_discussion.dart';
 import 'package:online_course_app/feature/detail_course/domain/usecases/create_review/create_review.dart';
 import 'package:online_course_app/feature/detail_course/domain/usecases/get_detail_course.dart';
+import 'package:online_course_app/feature/detail_course/domain/usecases/get_discussions.dart';
 import 'package:online_course_app/feature/detail_course/presentation/bloc/detail_course_bloc.dart';
 import 'package:online_course_app/feature/detail_teacher/data/data_source/firebase_detail_teacher_service.dart';
 import 'package:online_course_app/feature/detail_teacher/data/repository/detail_teacher_repository_impl.dart';
@@ -35,11 +36,13 @@ import 'package:online_course_app/feature/enrolled_course/data/repository/enroll
 import 'package:online_course_app/feature/enrolled_course/domain/repository/enrolled_course_repository.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/create_enrolled_course.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/get_enrolled_course.dart';
+import 'package:online_course_app/feature/enrolled_course/domain/usecases/get_last_progress_course.dart';
 import 'package:online_course_app/feature/enrolled_course/domain/usecases/set_is_video_done.dart';
 import 'package:online_course_app/feature/enrolled_course/presentation/bloc/enrolled_course/enrolled_course_bloc.dart';
 import 'package:online_course_app/feature/enrolled_course/presentation/bloc/enrolled_course_detail/enrolled_course_detail_bloc.dart';
 
 import 'feature/auth/domain/usecases/login/login.dart';
+import 'feature/auth/domain/usecases/set_id_last_progress_course/set_id_last_progress_course.dart';
 import 'feature/detail_course/data/data_source/detail_course_data_source.dart';
 import 'feature/detail_course/domain/usecases/unlock_course.dart';
 import 'feature/enrolled_course/data/data_source/enrolled_course_data_source.dart';
@@ -61,7 +64,7 @@ Future<void> initializeDependencies() async {
   //Repository
   sl.registerSingleton<CourseRepository>(CourseRepositoryImpl(sl()));
   sl.registerSingleton<DetailCourseRepository>(
-      DetailCourseRepositoryImpl(sl()));
+      DetailCourseRepositoryImpl(sl(), sl()));
   sl.registerSingleton<UserRepository>(UserRepositoryImpl(sl()));
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl(sl()));
   sl.registerSingleton<DetailTeacherRepository>(
@@ -76,7 +79,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<Login>(
       Login(authRepository: sl(), userRepository: sl()));
 
-  sl.registerSingleton<GetDetailCourseUseCase>(GetDetailCourseUseCase(sl()));
+  sl.registerSingleton<GetDetailCourseUseCase>(GetDetailCourseUseCase(sl(), sl()));
   sl.registerSingleton<GetLoggedInUser>(GetLoggedInUser(sl(), sl()));
 
   sl.registerSingleton<GetCoursesUseCase>(GetCoursesUseCase(sl()));
@@ -100,16 +103,22 @@ Future<void> initializeDependencies() async {
       GetEnrolledCoursesUseCase(sl(), sl()));
   sl.registerSingleton<SetVideoIsDoneUseCase>(
       SetVideoIsDoneUseCase(sl()));
+  sl.registerSingleton<GetLastProgressCourseUseCase>(
+      GetLastProgressCourseUseCase(sl()));
+  sl.registerSingleton<GetDiscussionsUseCase>(
+      GetDiscussionsUseCase(sl()));
+  sl.registerSingleton<SetIdLastProgressCourseUseCase>(
+      SetIdLastProgressCourseUseCase(sl(), sl()));
 
   //Bloc
   sl.registerFactory<AuthBloc>(() => AuthBloc(sl(), sl(), sl(), sl()));
 
   sl.registerFactory<DetailCourseBloc>(
-      () => DetailCourseBloc(sl(), sl(), sl(), sl()));
+      () => DetailCourseBloc(sl(), sl(), sl(), sl(), sl(), sl()));
 
-  sl.registerFactory<CourseBloc>(() => CourseBloc(sl()));
+  sl.registerFactory<CourseBloc>(() => CourseBloc(sl(), sl()));
   sl.registerFactory<TeacherBloc>(() => TeacherBloc(sl()));
   sl.registerFactory<DetailTeacherBloc>(() => DetailTeacherBloc(sl()));
   sl.registerFactory<EnrolledCourseBloc>(() => EnrolledCourseBloc(sl()));
-  sl.registerFactory<EnrolledCourseDetailBloc>(() => EnrolledCourseDetailBloc(sl()));
+  sl.registerFactory<EnrolledCourseDetailBloc>(() => EnrolledCourseDetailBloc(sl(), sl()));
 }

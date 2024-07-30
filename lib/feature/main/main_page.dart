@@ -36,11 +36,14 @@ class _MainPageState extends State<MainPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CourseBloc(sl())..add(GetCourses()),
+          create: (context) => CourseBloc(sl(), sl())..add(GetCourses()),
         ),
         BlocProvider(
-          create: (context) => EnrolledCourseBloc(sl())..add(GetEnrolledCourses()),
+          create: (context) => EnrolledCourseBloc(sl()),
         ),
+        // BlocProvider(
+        //   create: (context) => EnrolledCourseDetailBloc(sl()),
+        // ),
       ],
       child: Scaffold(
         body: Stack(

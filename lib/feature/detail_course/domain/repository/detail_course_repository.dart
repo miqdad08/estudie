@@ -8,7 +8,9 @@ import '../entities/detail_course.dart';
 import '../entities/review.dart';
 
 abstract class DetailCourseRepository {
-  FutureEither<DetailCourse> getCourseDetail(Course course);
+  FutureEither<DetailCourse> getCourseDetail(Course course, String uid);
+
+  FutureEither<List<Discussion>> getDetailDiscussion(String id);
 
   FutureEither<Discussion> createDiscussion({
     required Discussion discussion,

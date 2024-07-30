@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
             ..add(AuthGetCurrent()),
         ),
         BlocProvider(
-          create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl()),
+          create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl(), sl(), sl()),
         ),
       ],
       child: MaterialApp.router(

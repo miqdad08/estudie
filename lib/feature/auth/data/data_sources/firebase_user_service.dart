@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:online_course_app/core/resources/result.dart';
+import 'package:online_course_app/core/resources/type_defs.dart';
 import 'package:online_course_app/feature/auth/data/data_sources/user_data_source.dart';
 import 'package:online_course_app/feature/auth/data/models/user/user.dart';
 import 'package:path/path.dart';
@@ -53,7 +54,7 @@ class FirebaseUserService implements UserDataSource {
       } else {
         return const Result.failed('User not found');
       }
-    }on FirebaseException catch (e) {
+    } on FirebaseException catch (e) {
       return Result.failed(e.message ?? 'Failed to update user Data');
     }
   }
@@ -143,6 +144,31 @@ class FirebaseUserService implements UserDataSource {
       }
     } catch (e) {
       return const Result.failed('Failed to upload profile picture');
+    }
+  }
+
+  @override
+  Future<Result<UserModel>> setIdLastProgressCourse(
+      {required String uid, required String idEnrolledCourse}) async {
+    DocumentReference<Map<String, dynamic>> documentReference = _firestore.doc('users/$uid');
+
+    DocumentSnapshot<Map<String, dynamic>> result = await documentReference.get();
+
+    if (result.exists) {
+      await documentReference.update({'idLastProgressCourse': idEnrolledCourse});
+      DocumentSnapshot<Map<String, dynamic>> updatedResult = await documentReference.get();
+      if (updatedResult.exists) {
+        UserModel updatedUser = UserModel.fromJson(updatedResult.data()!);
+        if (updatedUser.idLastProgressCourse == idEnrolledCourse) {
+          return Result.success(updatedUser);
+        } else {
+          return const Result.failed('Failed to set id last progress course');
+        }
+      } else {
+        return const Result.failed('Failed to set id last progress course');
+      }
+    } else {
+      return const Result.failed('User not found');
     }
   }
 }

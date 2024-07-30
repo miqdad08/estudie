@@ -16,6 +16,7 @@ class DetailCourse extends Equatable {
   final List<Review> reviews;
   final List<Discussion>? discussions;
   final bool isUnlock;
+  final String? userEnrolledCourse;
 
   const DetailCourse({
     this.about,
@@ -27,6 +28,7 @@ class DetailCourse extends Equatable {
     required this.reviews,
     this.discussions,
     this.isUnlock = false,
+    this.userEnrolledCourse,
   });
 
   DetailCourse copyWith({
@@ -40,6 +42,7 @@ class DetailCourse extends Equatable {
     List<Review>? reviews,
     List<Discussion>? discussions,
     bool? isUnlock,
+    String? userEnrolledCourse,
   }) {
     return DetailCourse(
       id: id ?? this.id,
@@ -51,6 +54,7 @@ class DetailCourse extends Equatable {
       reviews: reviews ?? this.reviews,
       discussions: discussions ?? this.discussions,
       isUnlock: isUnlock ?? this.isUnlock,
+      userEnrolledCourse: userEnrolledCourse ?? this.userEnrolledCourse,
     );
   }
 
@@ -63,7 +67,8 @@ class DetailCourse extends Equatable {
     lessons,
     reviews,
     discussions,
-    isUnlock
+    isUnlock,
+    userEnrolledCourse,
   ];
 
 

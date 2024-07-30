@@ -8,3 +8,12 @@ abstract class CourseEvent extends Equatable{
 
 
 class GetCourses extends CourseEvent{}
+
+class GetLastProgressCourse extends CourseEvent{
+  final String idLastProgressCourse;
+
+  const GetLastProgressCourse({required this.idLastProgressCourse});
+
+  @override
+  List<Object> get props => [idLastProgressCourse];
+}

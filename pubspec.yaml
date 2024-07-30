@@ -57,6 +57,10 @@ dependencies:
   appinio_video_player: ^1.2.2
   youtube_player_flutter: ^8.1.2
   youtube_player_iframe: ^4.0.4
+  logger: ^2.2.0
+  loading_animation_widget: ^1.2.1
+  custom_refresh_indicator: ^3.1.0
+  pull_to_refresh: ^2.0.0
 
 
 dev_dependencies:

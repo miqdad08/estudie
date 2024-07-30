@@ -46,6 +46,15 @@ class CreateDiscussionSuccess extends DetailCourseState {
   List<Object> get props => [message];
 }
 
+class ListDiscussionsLoaded extends DetailCourseState {
+  final List<Discussion> data;
+
+  const ListDiscussionsLoaded({required this.data});
+
+  @override
+  List<Object> get props => [data];
+}
+
 class CreateReviewFailed extends DetailCourseState {
   final String message;
 
@@ -80,4 +89,13 @@ class UnlockCourseFailed extends DetailCourseState {
 
   @override
   List<Object> get props => [message];
+}
+class UserEnrolledCourseLoaded extends DetailCourseState {
+  final EnrolledCourseEntity data;
+  final Video video;
+
+  const UserEnrolledCourseLoaded({required this.data, required this.video});
+
+  @override
+  List<Object> get props => [data];
 }

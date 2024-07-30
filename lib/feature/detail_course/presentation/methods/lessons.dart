@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:online_course_app/common_widget/item/section_item.dart';
 import '../../../../config/theme/app_theme.dart';
-import '../../domain/entities/section.dart';
 import '../../domain/entities/video.dart';
 
 Widget lessons(
   BuildContext context,
   List<Video> lessons,
   bool isUnlock, {
-  required Function(Video, Section) onTapVideo,
+  required Function(Video) onTapVideo,
+  Video? isSelectedVideo,
 }) {
   Map<String, List<Video>> groupedLessons = {};
 
@@ -37,27 +37,18 @@ Widget lessons(
               ),
             ),
             Column(
-              children: sectionLessons.map((lesson) => VideoTitleItem(
-                video: lesson,
-                index: sectionLessons.indexOf(lesson),
-                isUnlock: isUnlock,
-                onTap: (video) {},
-              )).toList(),
+              children: sectionLessons
+                  .map((lesson) => VideoTitleItem(
+                        video: lesson,
+                        isSelected: isSelectedVideo != null
+                            ? isSelectedVideo == lesson
+                            : false,
+                        index: sectionLessons.indexOf(lesson),
+                        isUnlock: isUnlock,
+                        onTap: (video) => onTapVideo(video),
+                      ))
+                  .toList(),
             ),
-            // ListView.builder(
-            //   shrinkWrap: true,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   itemCount: sectionLessons.length,
-            //   itemBuilder: (context, index) {
-            //     Video lesson = sectionLessons[index];
-            //     return VideoTitleItem(
-            //       video: lesson,
-            //       index: lessons.indexOf(lesson),
-            //       isUnlock: isUnlock,
-            //       onTap: (video) {},
-            //     );
-            //   },
-            // ),
           ],
         );
       },

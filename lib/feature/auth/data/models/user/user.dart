@@ -13,6 +13,7 @@ class UserModel with _$UserModel {
     required String email,
     required String name,
     String? photoUrl,
+    String? idLastProgressCourse,
     @Default(0) int? balance,
   }) = _UserModel;
 
@@ -25,6 +26,7 @@ class UserModel with _$UserModel {
         name: user.name,
         photoUrl: user.photoUrl,
         balance: user.balance,
+        idLastProgressCourse: user.idLastProgressCourse,
       );
 
   User toEntity() {
@@ -34,6 +36,7 @@ class UserModel with _$UserModel {
       balance: balance,
       name: name,
       photoUrl: photoUrl,
+      idLastProgressCourse: idLastProgressCourse
     );
   }
 }

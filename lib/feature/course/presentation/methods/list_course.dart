@@ -11,7 +11,7 @@ Widget listCourse({
   required final Function(Course title) onTap,
 }) {
   return BlocProvider<CourseBloc>(
-    create: (context) => CourseBloc(sl())..add(GetCourses()),
+    create: (context) => CourseBloc(sl(), sl())..add(GetCourses()),
     child: BlocBuilder<CourseBloc, CourseState>(
       builder: (context, state) {
         if (state is CoursesSuccess) {

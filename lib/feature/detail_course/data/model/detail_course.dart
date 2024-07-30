@@ -15,6 +15,7 @@ class DetailCourseModel {
   final List<VideoModel> lessons;
   final List<DiscussionModel>? discussions;
   final bool isUnlock;
+  final String? userEnrolledCourse;
 
   const DetailCourseModel({
     required this.id,
@@ -26,6 +27,7 @@ class DetailCourseModel {
     required this.reviews,
     required this.discussions,
     required this.isUnlock,
+    this.userEnrolledCourse,
   });
 
   DetailCourseModel copyWith({
@@ -38,6 +40,7 @@ class DetailCourseModel {
     // List<SectionModel>? lessons,
     List<VideoModel>? lessons,
     final List<DiscussionModel>? discussions,
+    String? userEnrolledCourse,
     bool? isUnlock,
   }) {
     return DetailCourseModel(
@@ -50,6 +53,7 @@ class DetailCourseModel {
       lessons: lessons ?? this.lessons,
       discussions: discussions ?? this.discussions,
       isUnlock: isUnlock ?? this.isUnlock,
+      userEnrolledCourse: userEnrolledCourse ?? this.userEnrolledCourse,
     );
   }
 
@@ -114,6 +118,7 @@ class DetailCourseModel {
                   .map((item) => DiscussionModel.fromEntity(item)),
             ),
       isUnlock: detailCourse.isUnlock,
+      userEnrolledCourse: detailCourse.userEnrolledCourse,
     );
   }
 
@@ -129,6 +134,7 @@ class DetailCourseModel {
       discussions:
           discussions?.map((discussion) => discussion.toEntity()).toList(),
       isUnlock: isUnlock,
+      userEnrolledCourse: userEnrolledCourse,
     );
   }
 }

@@ -24,6 +24,7 @@ mixin _$UserModel {
   String get email => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get photoUrl => throw _privateConstructorUsedError;
+  String? get idLastProgressCourse => throw _privateConstructorUsedError;
   int? get balance => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +39,12 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String uid, String email, String name, String? photoUrl, int? balance});
+      {String uid,
+      String email,
+      String name,
+      String? photoUrl,
+      String? idLastProgressCourse,
+      int? balance});
 }
 
 /// @nodoc
@@ -58,6 +64,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? email = null,
     Object? name = null,
     Object? photoUrl = freezed,
+    Object? idLastProgressCourse = freezed,
     Object? balance = freezed,
   }) {
     return _then(_value.copyWith(
@@ -77,6 +84,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.photoUrl
           : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      idLastProgressCourse: freezed == idLastProgressCourse
+          ? _value.idLastProgressCourse
+          : idLastProgressCourse // ignore: cast_nullable_to_non_nullable
+              as String?,
       balance: freezed == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
@@ -94,7 +105,12 @@ abstract class _$$UserModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String uid, String email, String name, String? photoUrl, int? balance});
+      {String uid,
+      String email,
+      String name,
+      String? photoUrl,
+      String? idLastProgressCourse,
+      int? balance});
 }
 
 /// @nodoc
@@ -112,6 +128,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? email = null,
     Object? name = null,
     Object? photoUrl = freezed,
+    Object? idLastProgressCourse = freezed,
     Object? balance = freezed,
   }) {
     return _then(_$UserModelImpl(
@@ -131,6 +148,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.photoUrl
           : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      idLastProgressCourse: freezed == idLastProgressCourse
+          ? _value.idLastProgressCourse
+          : idLastProgressCourse // ignore: cast_nullable_to_non_nullable
+              as String?,
       balance: freezed == balance
           ? _value.balance
           : balance // ignore: cast_nullable_to_non_nullable
@@ -147,6 +168,7 @@ class _$UserModelImpl implements _UserModel {
       required this.email,
       required this.name,
       this.photoUrl,
+      this.idLastProgressCourse,
       this.balance = 0});
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -161,12 +183,14 @@ class _$UserModelImpl implements _UserModel {
   @override
   final String? photoUrl;
   @override
+  final String? idLastProgressCourse;
+  @override
   @JsonKey()
   final int? balance;
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, name: $name, photoUrl: $photoUrl, balance: $balance)';
+    return 'UserModel(uid: $uid, email: $email, name: $name, photoUrl: $photoUrl, idLastProgressCourse: $idLastProgressCourse, balance: $balance)';
   }
 
   @override
@@ -179,13 +203,15 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.photoUrl, photoUrl) ||
                 other.photoUrl == photoUrl) &&
+            (identical(other.idLastProgressCourse, idLastProgressCourse) ||
+                other.idLastProgressCourse == idLastProgressCourse) &&
             (identical(other.balance, balance) || other.balance == balance));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, uid, email, name, photoUrl, balance);
+  int get hashCode => Object.hash(
+      runtimeType, uid, email, name, photoUrl, idLastProgressCourse, balance);
 
   @JsonKey(ignore: true)
   @override
@@ -203,11 +229,12 @@ class _$UserModelImpl implements _UserModel {
   @override
   User toEntity() {
     return User(
-      uid: uid,
-      email: email,
-      balance: balance,
-      name: name,
-      photoUrl: photoUrl,
+        uid: uid,
+        email: email,
+        balance: balance,
+        name: name,
+        photoUrl: photoUrl,
+        idLastProgressCourse: idLastProgressCourse
     );
   }
 }
@@ -218,6 +245,7 @@ abstract class _UserModel implements UserModel {
       required final String email,
       required final String name,
       final String? photoUrl,
+      final String? idLastProgressCourse,
       final int? balance}) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
@@ -231,6 +259,8 @@ abstract class _UserModel implements UserModel {
   String get name;
   @override
   String? get photoUrl;
+  @override
+  String? get idLastProgressCourse;
   @override
   int? get balance;
   @override

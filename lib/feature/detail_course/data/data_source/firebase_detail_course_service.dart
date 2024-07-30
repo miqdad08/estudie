@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:online_course_app/common_util/logger.dart';
 import 'package:online_course_app/core/resources/result.dart';
 import 'package:online_course_app/feature/course/data/models/teacher/teacher.dart';
 
@@ -77,10 +78,11 @@ class FirebaseDetailCourseService implements DetailDataSource {
   Future<Result<List<DiscussionModel>>> getDiscussions(String id) async {
     DocumentReference<Map<String, dynamic>> documentReference =
         _firebaseFirestore.doc('discussions/$id');
+
     try {
       DocumentSnapshot<Map<String, dynamic>> result =
           await documentReference.get();
-
+      LoggerUtils.logger("id $id");
       if (result.exists) {
         return Result.success(List<DiscussionModel>.from(result["discussions"]!
             .map((item) => DiscussionModel.fromJson(item))));
@@ -104,7 +106,7 @@ class FirebaseDetailCourseService implements DetailDataSource {
         'discussions': FieldValue.arrayUnion([
           discussion.toJson(),
         ]),
-      }, SetOptions(merge: false));
+      }, SetOptions(merge: true));
       var result = await discussions.doc(id).get();
       if (result.exists) {
         return Result.success(discussion);

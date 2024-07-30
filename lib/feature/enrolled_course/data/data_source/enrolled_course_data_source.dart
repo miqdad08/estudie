@@ -21,4 +21,8 @@ abstract class EnrolledCourseDataSource {
     required EnrolledCourseModel course,
     Video? video,
   });
+
+  Future<Result<EnrolledCourseModel>> getLastProgressCourse({
+    required String idLastProgressCourse,
+  });
 }

@@ -53,4 +53,14 @@ class EnrolledCourseRepositoryImpl implements EnrolledCourseRepository {
       return Left(Failure(message: result.errorMessage!));
     }
   }
+
+  @override
+  FutureEither<EnrolledCourseEntity> getLastProgressCourse({required String idLastProgressCourse}) async{
+    final result = await _enrolledCourseDataSource.getLastProgressCourse(idLastProgressCourse: idLastProgressCourse);
+    if (result.isSuccess) {
+      return Right(result.resultValue!.toEntity());
+    } else {
+      return Left(Failure(message: result.errorMessage!));
+    }
+  }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:online_course_app/common_util/extensions/build_context_extension.dart';
+import 'package:online_course_app/common_util/logger.dart';
 import 'package:online_course_app/common_util/size/methods.dart';
 import 'package:online_course_app/common_widget/button/custom_button.dart';
 import 'package:online_course_app/common_widget/image/custom_image.dart';
@@ -16,7 +18,9 @@ import 'package:online_course_app/feature/detail_course/presentation/methods/les
 import 'package:online_course_app/feature/detail_course/presentation/methods/previews_course.dart';
 import 'package:online_course_app/injection_container.dart';
 import '../../../common_widget/appbar/appbar_widget.dart';
+import '../../../config/theme/app_theme.dart';
 import '../../course/domain/entities/course.dart';
+import '../../enrolled_course/presentation/detail_enrolled_course_page.dart';
 import '../domain/entities/discussion.dart';
 import '../domain/entities/review.dart';
 import '../domain/entities/section.dart';
@@ -63,7 +67,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl())
+      create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl(), sl(), sl())
         ..add(GetDetailCourse(
           course: widget.courseData,
         )),
@@ -78,7 +82,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
         ),
         body: BlocConsumer<DetailCourseBloc, DetailCourseState>(
           listener: (BuildContext context, DetailCourseState state) {
-            print('object $state');
+            LoggerUtils.logger(state);
             if (state is DetailCourseFailed) {
               context.showSnackBar(state.message);
             }
@@ -102,6 +106,23 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
             if (state is UnlockCourseFailed) {
               context.showSnackBar(state.message);
             }
+            if (state is UserEnrolledCourseLoaded) {
+              context
+                  .pushNamed(
+                    DetailEnrolledCoursePage.routeName,
+                    extra: DetailEnrolledCourseArguments(
+                      data: state.data,
+                      video: state.video,
+                    ),
+                  )
+                  .then(
+                    (value) => context.read<DetailCourseBloc>().add(
+                          GetDetailCourse(
+                            course: widget.courseData,
+                          ),
+                        ),
+                  );
+            }
             if (state is CreateDiscussionSuccess ||
                 state is CreateReviewSuccess) {
               context.read<DetailCourseBloc>().add(
@@ -113,8 +134,12 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
           },
           builder: (context, state) {
             if (state is DetailCourseLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
+              return Center(
+                child: LoadingAnimationWidget.flickr(
+                  leftDotColor: theme.colorScheme.primaryContainer,
+                  rightDotColor: theme.colorScheme.errorContainer,
+                  size: 30,
+                ),
               );
             }
             if (state is DetailCourseLoaded) {
@@ -144,49 +169,46 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
                     widget.courseData,
                     onSubmitDiscussion: () {
                       context.read<DetailCourseBloc>().add(
-                        CreateDiscussion(
-                          discussion: CreateDiscussionParam(
-                            fileAttachments: photoAttachments
-                                .map((photo) => photo)
-                                .toList(),
-                            id: widget.courseData.id,
-                            discussion: Discussion(
-                              title: titleCont.text,
-                              description: detailsCont.text,
-                              time: 1,
+                            CreateDiscussion(
+                              discussion: CreateDiscussionParam(
+                                fileAttachments: photoAttachments
+                                    .map((photo) => photo)
+                                    .toList(),
+                                id: widget.courseData.id,
+                                discussion: Discussion(
+                                  title: titleCont.text,
+                                  description: detailsCont.text,
+                                  time: 1,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
+                          );
                       context.pop();
                     },
                     onSubmitReview: () {
                       context.read<DetailCourseBloc>().add(
-                        CreateReview(
-                          review: CreateReviewParam(
-                            id: widget.courseData.id,
-                            review: Review(
-                              review: reviewCont.text,
-                              rating: double.tryParse(rateCont.text) ?? 0,
-                              time: 1,
+                            CreateReview(
+                              review: CreateReviewParam(
+                                id: widget.courseData.id,
+                                review: Review(
+                                  review: reviewCont.text,
+                                  rating: double.tryParse(rateCont.text) ?? 0,
+                                  time: 1,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
+                          );
                       context.pop();
                     },
-                    onTapVideo: (video, section) {
-                      // context.pushNamed(
-                      //   DetailEnrolledCoursePage.routeName,
-                      //   extra: DetailEnrolledCourseArguments(
-                      //     video: video,
-                      //     section: section,
-                      //     title: widget.courseData.title,
-                      //     lessons: state.data.lessons,
-                      //     idCourse: widget.courseData.id,
-                      //     discussions: state.data.discussions,
-                      //   ),
-                      // );
+                    onTapVideo: (video) {
+                      if (state.data.userEnrolledCourse != null) {
+                        context.read<DetailCourseBloc>().add(
+                              GetUserEnrolledCourse(
+                                idCourse: state.data.userEnrolledCourse!,
+                                video: video,
+                              ),
+                            );
+                      }
                     },
                   ),
                   verticalSpace(75)
@@ -250,7 +272,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
     Course course, {
     required dynamic Function() onSubmitDiscussion,
     required dynamic Function() onSubmitReview,
-    required dynamic Function(Video, Section) onTapVideo,
+    required dynamic Function(Video) onTapVideo,
   }) {
     switch (selectedCategory) {
       case 'About':
@@ -263,7 +285,7 @@ class _DetailCoursePageState extends State<DetailCoursePage> {
           context,
           detailCourse.lessons,
           detailCourse.isUnlock,
-          onTapVideo: (video, section) => onTapVideo(video, section),
+          onTapVideo: (video) => onTapVideo(video),
         );
       case 'Discussions':
         return discussions(

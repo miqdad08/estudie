@@ -20,36 +20,39 @@ Widget discussions(
 }) =>
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Column(
-        children: [
-          CustomButtonWidget(
-            title: 'Ask a question',
-            onPressed: () async {
-              ModalCreateDiscussion.show(
-                context,
-                titleCont: titleCont,
-                detailsCont: detailsCont,
-                photoAttacments: photoAttacments,
-                onAddImage: onAddImage,
-                onRemove: onRemove,
-                onSubmit: onSubmit,
-              );
-            },
-          ),
-          verticalSpace(10),
-          if (discussions != null) ...[
-            ...(discussions..sort((a, b) => -a.time.compareTo(b.time))).map(
-              (discussion) => Padding(
-                padding: EdgeInsets.only(
-                    bottom: discussion == discussions.last ? 6 : 16),
-                child: DiscussionItem(
-                  discussion: discussion,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            CustomButtonWidget(
+              title: 'Ask a question',
+              onPressed: () async {
+                ModalCreateDiscussion.show(
+                  context,
+                  titleCont: titleCont,
+                  detailsCont: detailsCont,
+                  photoAttachments: photoAttacments,
+                  onAddImage: onAddImage,
+                  onRemove: onRemove,
+                  onSubmit: onSubmit,
+                );
+              },
+            ),
+            verticalSpace(10),
+            if (discussions != null) ...[
+              ...(discussions..sort((a, b) => -a.time.compareTo(b.time))).map(
+                (discussion) => Padding(
+                  padding: EdgeInsets.only(
+                      bottom: discussion == discussions.last ? 6 : 16),
+                  child: DiscussionItem(
+                    discussion: discussion,
+                  ),
                 ),
               ),
-            ),
-          ] else ...[
-            const Text('No discussion')
+            ] else ...[
+              const Text('No discussion')
+            ],
           ],
-        ],
+        ),
       ),
     );

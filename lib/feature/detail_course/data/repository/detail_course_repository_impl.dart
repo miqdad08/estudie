@@ -7,6 +7,7 @@ import 'package:online_course_app/core/resources/type_defs.dart';
 import 'package:online_course_app/feature/detail_course/domain/entities/detail_course.dart';
 import 'package:online_course_app/feature/detail_course/domain/entities/discussion.dart';
 import 'package:online_course_app/feature/detail_course/domain/entities/review.dart';
+import 'package:online_course_app/feature/enrolled_course/data/data_source/enrolled_course_data_source.dart';
 import '../../../course/domain/entities/course.dart';
 import '../../domain/repository/detail_course_repository.dart';
 import '../data_source/detail_course_data_source.dart';
@@ -16,27 +17,40 @@ import '../model/review.dart';
 
 class DetailCourseRepositoryImpl implements DetailCourseRepository {
   final DetailDataSource _firebaseDetailCourseService;
+  final EnrolledCourseDataSource _firebaseEnrolledCourseService;
 
-  DetailCourseRepositoryImpl(this._firebaseDetailCourseService);
+  DetailCourseRepositoryImpl(
+      this._firebaseDetailCourseService, this._firebaseEnrolledCourseService);
 
   @override
-  FutureEither<DetailCourse> getCourseDetail(Course course) async {
-    final result = await _firebaseDetailCourseService.getDetailCourse(course.id);
-    final resultReviews = await _firebaseDetailCourseService.getReviews(course.id);
-    final resultLessons = await _firebaseDetailCourseService.getLessons(course.id);
-    final resultDiscussion = await _firebaseDetailCourseService.getDiscussions(course.id);
-    final resultTeacher = await _firebaseDetailCourseService.getTeacher(teacherId: course.idTeacher);
+  FutureEither<DetailCourse> getCourseDetail(Course course, String uid) async {
+    final result =
+        await _firebaseDetailCourseService.getDetailCourse(course.id);
+    final resultReviews =
+        await _firebaseDetailCourseService.getReviews(course.id);
+    final resultLessons =
+        await _firebaseDetailCourseService.getLessons(course.id);
+    final resultDiscussion =
+        await _firebaseDetailCourseService.getDiscussions(course.id);
+    final resultTeacher = await _firebaseDetailCourseService.getTeacher(
+        teacherId: course.idTeacher);
+    final resultEnrolledCourse = await _firebaseEnrolledCourseService
+        .getEnrolledCourseDetail(uid: uid, id: course.id);
     if (result.isSuccess &&
         resultReviews.isSuccess &&
         resultLessons.isSuccess &&
         resultDiscussion.isSuccess) {
       return Right(result.resultValue!
           .copyWith(
-        teacher: resultTeacher.resultValue,
-        reviews: resultReviews.resultValue,
-        lessons: resultLessons.resultValue,
-        discussions: resultDiscussion.resultValue,
-      )
+            isUnlock: resultEnrolledCourse.isSuccess,
+            teacher: resultTeacher.resultValue,
+            reviews: resultReviews.resultValue,
+            lessons: resultEnrolledCourse.isSuccess ? resultEnrolledCourse.resultValue!.lessons : resultLessons.resultValue,
+            discussions: resultDiscussion.resultValue,
+            userEnrolledCourse: resultEnrolledCourse.isSuccess
+                ? resultEnrolledCourse.resultValue!.id
+                : null,
+          )
           .toEntity());
     } else {
       return Left(Failure(message: result.errorMessage!));
@@ -53,7 +67,7 @@ class DetailCourseRepositoryImpl implements DetailCourseRepository {
 
     if (fileAttachments != null && fileAttachments.isNotEmpty) {
       final uploadAttachmentResult =
-      await _firebaseDetailCourseService.uploadPhotoAttachments(
+          await _firebaseDetailCourseService.uploadPhotoAttachments(
         attachmentsFile: fileAttachments,
         id: id,
       );
@@ -99,12 +113,25 @@ class DetailCourseRepositoryImpl implements DetailCourseRepository {
     final result = await _firebaseDetailCourseService.unlockCourse(
         detailCourse: DetailCourseModel.fromEntity(detailCourse));
     if (result.isSuccess && course != null) {
-      final resultTeacher = await _firebaseDetailCourseService.getTeacher(teacherId: course.idTeacher);
-      if(resultTeacher.isSuccess){
-        return Right(result.resultValue!.copyWith(teacher: resultTeacher.resultValue).toEntity());
-      }else{
+      final resultTeacher = await _firebaseDetailCourseService.getTeacher(
+          teacherId: course.idTeacher);
+      if (resultTeacher.isSuccess) {
+        return Right(result.resultValue!
+            .copyWith(teacher: resultTeacher.resultValue)
+            .toEntity());
+      } else {
         return Left(Failure(message: result.errorMessage!));
       }
+    } else {
+      return Left(Failure(message: result.errorMessage!));
+    }
+  }
+
+  @override
+  FutureEither<List<Discussion>> getDetailDiscussion(String id) async {
+    final result = await _firebaseDetailCourseService.getDiscussions(id);
+    if (result.isSuccess) {
+      return Right(result.resultValue!.map((e) => e.toEntity()).toList());
     } else {
       return Left(Failure(message: result.errorMessage!));
     }

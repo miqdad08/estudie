@@ -51,15 +51,15 @@ class SectionItem extends StatelessWidget {
 class VideoTitleItem extends StatelessWidget {
   const VideoTitleItem({
     super.key,
-    // required this.section,
     required this.isUnlock,
+    this.isSelected = false,
     required this.onTap,
     required this.video,
     required this.index,
   });
 
-  // final Section section;
   final bool isUnlock;
+  final bool isSelected;
   final Video video;
   final int index;
   final Function(Video) onTap;
@@ -95,6 +95,7 @@ class VideoTitleItem extends StatelessWidget {
                 ),
                 decoration: AppDecoration.fillOnPrimary.copyWith(
                   borderRadius: BorderRadiusStyle.roundedBorder16,
+                  color: isSelected ? appTheme.deepPurpleA700 : theme.colorScheme.onPrimary,
                 ),
                 child: Align(
                   alignment: Alignment.center,
@@ -120,10 +121,10 @@ class VideoTitleItem extends StatelessWidget {
               const Spacer(),
               CustomImageWidget(
                 imagePath: isUnlock
-                    ? null
-                    : video.isDone
+                    ? video.isDone
                         ? IconsConstants.icCheckMark
-                        : IconsConstants.icLock,
+                        : null
+                    : IconsConstants.icLock,
                 height: 24,
                 width: 24,
                 margin: const EdgeInsets.symmetric(vertical: 3),

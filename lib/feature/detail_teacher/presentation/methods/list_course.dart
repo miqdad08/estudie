@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:online_course_app/feature/detail_teacher/presentation/detail_teacher_bloc/detail_teacher_bloc.dart';
 import 'package:online_course_app/injection_container.dart';
 import '../../../../common_util/size/methods.dart';
@@ -17,6 +18,15 @@ Widget listCourse({
       ..add(GetCoursesByTeacher(idTeacher: teacher.id)),
     child: BlocBuilder<DetailTeacherBloc, DetailTeacherState>(
       builder: (context, state) {
+        if(state is CourseLoading){
+          return Center(
+            child: LoadingAnimationWidget.flickr(
+              leftDotColor: theme.colorScheme.primaryContainer,
+              rightDotColor: theme.colorScheme.errorContainer,
+              size: 30,
+            ),
+          );
+        }
         if (state is CoursesSuccess) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

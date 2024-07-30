@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:online_course_app/common_util/logger.dart';
 import 'package:online_course_app/core/resources/result.dart';
 import 'auth_data_source.dart';
 
@@ -24,7 +25,8 @@ class FirebaseAuthService extends AuthDataSource {
         return const Result.failed('Failed to login');
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
-      return Result.failed(e.message ?? 'Failed to login');
+      LoggerUtils.loggerError("message ${e.message}");
+      return Result.failed(e.code ?? 'Failed to login');
     }
   }
 
