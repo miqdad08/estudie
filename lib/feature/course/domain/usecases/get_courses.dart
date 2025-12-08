@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import 'package:fpdart/fpdart.dart' show Either;
 import 'package:online_course_app/core/resources/failure.dart';
 import 'package:online_course_app/core/usecase/usecase.dart';
 import 'package:online_course_app/feature/course/domain/repository/course_repository.dart';

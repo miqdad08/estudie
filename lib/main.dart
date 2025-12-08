@@ -32,12 +32,11 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-          create: (context) =>
-          sl()
-            ..add(AuthGetCurrent()),
+          create: (context) => sl()..add(AuthGetCurrent()),
         ),
         BlocProvider(
-          create: (context) => DetailCourseBloc(sl(), sl(), sl(), sl(), sl(), sl()),
+          create: (context) =>
+              DetailCourseBloc(sl(), sl(), sl(), sl(), sl(), sl()),
         ),
       ],
       child: MaterialApp.router(
